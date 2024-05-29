@@ -5,3 +5,6 @@ import { TypedCSocket } from "../server/types";
 import parser from "socket.io-msgpack-parser";
 
 export const socket = io({ parser }) as TypedCSocket;
+socket.on("disconnect", e => {
+    location.reload();
+});
