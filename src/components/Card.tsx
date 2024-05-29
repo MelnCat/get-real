@@ -52,14 +52,14 @@ const aliases = {
 const cardBackgroundForColor = (color: string | string[], colorOverride: string | undefined) => {
 	const real = typeof color === "string" && color in aliases ? aliases[color as keyof typeof aliases] : color;
 	if (real instanceof Array && real.length > 1) {
-		return `linear-gradient(${real.join(", ")})`;
+		return `linear-gradient(in oklab, ${real.join(", ")})`;
 	}
 	return typeof real === "string" ? real : real[0];
 };
 const ringBackgroundForColor = (color: string | string[], colorOverride: string | undefined) => {
 	const real = typeof color === "string" && color in aliases ? aliases[color as keyof typeof aliases] : color;
 	if (real instanceof Array && real.length > 1) {
-		return `conic-gradient(${real.flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;
+		return `conic-gradient(in oklab, ${real.flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;
 	}
 	return typeof real === "string" ? real : real[0];
 };

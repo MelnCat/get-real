@@ -237,7 +237,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 			if (data.cards.length === 1 && !data.called) {
 				for (const card of game.takeDeck(game.rules.unrealPenalty)) data.cards.push(card);
 				gameManager.resendGame(game.room);
-				players[id].socket.emit("game:pickup", 2);
+				players[id].socket.emit("game:pickup", game.rules.unrealPenalty);
 			}
 		}
 	});
@@ -318,6 +318,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 		if (game === null) return;
 		if (game.playerList[game.currIndex] !== socket.data.playerId) return;
 		if (!game.canPlay || game.pickup === 0) return;
+		game.pickup = Math.floor(game.pickup);
 
 		if (game.pickup > 0) for (const card of game.takeDeck(game.pickup)) game.players[socket.data.playerId].cards.push(card);
 		else {

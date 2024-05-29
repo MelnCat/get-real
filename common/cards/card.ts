@@ -10,6 +10,9 @@ export interface PlayedCard extends Card {
 	id: string;
 	colorOverride?: string;
 }
+export interface NumberedCard extends Card {
+	count?: number;
+}
 
 export type CardType = number | string;
 
@@ -22,7 +25,7 @@ export type GameConstants = {
 	amountPerNumber: number;
 	amountPerWild: number;
 	amountPerNumberOverride: { [key: number | string]: number };
-	extra: (() => Card[]) | Card[];
+	extra: (() => NumberedCard[]) | NumberedCard[];
 	copies?: number;
 };
 
@@ -55,18 +58,19 @@ export const originalConstants = {
 		{ type: "skip", variety: "normal", count: 2 },
 		{ type: "reverse", variety: "normal", count: 2 },
 		{ type: "+4", variety: "wild", count: 4 },
+		{ type: " ", variety: "wild", count: 8 }
 	],
 	amountPerNumber: 2,
 	amountPerWild: 0,
 	amountPerNumberOverride: { "0": 1 },
-	extra: (): Card[] => [...Array(8).fill({ type: " ", color: originalConstants.colors })],
+	extra: [],
 } satisfies GameConstants;
 
 export const cursedConstants = {
-	colors: ["#eeeeee", "#c9c9c9", "#757575", "#1c1c1c", "#8f0000", "#ff0000", "#ff8c00", "#ffdd00", "#0fe000", "#00ffa2", "#00eaff", "#00aeff", "#006eff", "#ee00ff", "#fbbfff"],
+	colors: ["red", "blue", "yellow", "green", "orange", "purple", "#eee", "#111", "lime", "brown", "goldenrod", "teal"],
 	wilds: [],
 	includeMulticolorWild: true,
-	numbers: ["θ", "Δ", -3, "π", "φ", "ψ", "Ω", "λ", "μ", "α", "Ω", "τ", "ξ", "ζ", "χ", "ω", "½", "א", "$", "Σ", "∫", "√", "&"],
+	numbers: [2024, "π", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "hi"],
 	amountPerNumber: 2,
 	amountPerWild: 1,
 	amountPerNumberOverride: { π: 4 },
@@ -75,28 +79,22 @@ export const cursedConstants = {
 		{ type: "+4", variety: "both", count: 4 },
 		{ type: "+8", variety: "both", count: 4 },
 		{ type: "+16", variety: "both", count: 4 },
-		{ type: "+32", variety: "both", count: 4 },
-		{ type: "+64", variety: "both", count: 4 },
+		{ type: "×2", variety: "both", count: 2 },
+		{ type: "×1.5", variety: "both", count: 2 },
+		{ type: "−2", variety: "both", count: 2 },
+		{ type: "−4", variety: "both", count: 2 },
+		{ type: "−8", variety: "both", count: 2 },
+		{ type: "÷2", variety: "both", count: 2 },
+		{ type: "÷4", variety: "both", count: 2 },
+		{ type: "+∞", variety: "wild", count: 1 },
+		{ type: "+?", variety: "both", count: 2 },
+		{ type: "2ˣ", variety: "wild", count: 1 },
+		{ type: "^2", variety: "wild", count: 1 },
 		{ type: "×0", variety: "wild", count: 2 },
-		{ type: "×2", variety: "both", count: 4 },
-		{ type: "×4", variety: "both", count: 4 },
-		{ type: "×8", variety: "both", count: 4 },
-		{ type: "×1.5", variety: "both", count: 4 },
-		{ type: "−2", variety: "both", count: 4 },
-		{ type: "−4", variety: "both", count: 4 },
-		{ type: "−8", variety: "both", count: 4 },
-		{ type: "÷2", variety: "both", count: 4 },
-		{ type: "÷4", variety: "both", count: 4 },
-		{ type: "+∞", variety: "wild", count: 2 },
-		{ type: "÷0", variety: "wild", count: 2 },
-		{ type: "+?", variety: "both", count: 4 },
-		{ type: "2ˣ", variety: "wild", count: 2 },
-		{ type: "^2", variety: "wild", count: 2 },
-		{ type: "skip", variety: "both", count: 8 },
-		{ type: "reverse", variety: "both", count: 8 },
-		{ type: "💀", variety: "both", count: 1 },
+		{ type: "skip", variety: "both", count: 2 },
+		{ type: "reverse", variety: "both", count: 2 },
 	],
-	extra: [{ color: "pink", type: "π" }, { color: "pink", type: "π" }, ...Array(4).fill({ color: ["blue", "#eee", "red"], type: "FR" })],
+	extra: [{ color: ["blue", "#eee", "red"], type: "FR", count: 4 }, { color: ["#111", "red", "yellow"], type: "DE", count: 4 }],
 } satisfies GameConstants;
 export const deckTypes = {
 	normal: defaultConstants,
@@ -107,8 +105,7 @@ export const deckTypes = {
 	original: originalConstants,
 	originalWithSwap: {
 		...originalConstants,
-		special: originalConstants.special.concat({ type: "swap", variety: "wild", count: 4 }),
-		extra: () => originalConstants.extra().slice(4),
+		special: originalConstants.special.slice(0, -1).concat({ type: " ", variety: "wild", count: 4 }, { type: "swap", variety: "wild", count: 4 })
 	},
 	cursed: cursedConstants,
 } satisfies Record<string, GameConstants>;
