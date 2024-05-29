@@ -312,7 +312,7 @@ export default function GamePage() {
 					</div>
 				))}
 			</div>
-			{room.state === "end" && (
+			{room.state === "end" ? (
 				<div className={`${roboto.className} ${styles.endScreen}`}>
 					<h1>Game Over</h1>
 					<ul>
@@ -327,6 +327,10 @@ export default function GamePage() {
 						Leave
 					</button>
 				</div>
+			) : (
+				<button className={styles.gameLeaveButton} onClick={onClickLeave}>
+					Quit Game
+				</button>
 			)}
 		</main>
 	);

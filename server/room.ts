@@ -9,6 +9,8 @@ interface RoomCreateOptions {
 	unlisted: boolean;
 	deckType: string;
 	rules: GameRules;
+	lateJoins: boolean;
+	max: number;
 }
 export interface ClientRoomData {
 	name: string;
@@ -87,12 +89,13 @@ export const roomManager = {
 			if (room.state !== "lobby" && room.game.deck.length < room.game.rules.startingCards) return;
 			room.players.push(playerId);
 			this._roomPlayerCache[playerId] = room;
-			this.resendData(roomId);
 			if (room.state !== "lobby") {
+				console.log("Got here")
 				room.game.players[playerId] = { cards: [...room.game.deck.splice(0, room.game.rules.startingCards)], called: false };
 				room.game.playerList.push(playerId);
 				gameManager.resendGame(room);
 			}
+			this.resendData(roomId);
 		}
 	},
 	resendData(name: string) {
@@ -146,8 +149,8 @@ export const roomManager = {
 		const room: Room = {
 			owner,
 			state: "lobby",
-			lateJoins: false,
-			max: 10,
+			lateJoins: options.lateJoins,
+			max: options.max,
 			name: options.name,
 			players: [owner],
 			unlisted: options.unlisted,

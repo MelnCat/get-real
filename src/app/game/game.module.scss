@@ -422,3 +422,22 @@
 		transform: rotateX(360deg);
 	}
 }
+
+.gameLeaveButton {
+	background-color: white;
+	padding: 0.5em 0.8em;
+	font-size: 1em;
+	font-weight: bold;
+	border-radius: 6px;
+	position: fixed;
+	top: 1em;
+	right: 1em;
+	transition: background-color 0.2s;
+	z-index: 2;
+	&:hover {
+		background-color: #ddd;
+	}
+	&:active {
+		background-color: #bbb;
+	}
+}
