@@ -90,7 +90,6 @@ export const roomManager = {
 			room.players.push(playerId);
 			this._roomPlayerCache[playerId] = room;
 			if (room.state !== "lobby") {
-				console.log("Got here")
 				room.game.players[playerId] = { cards: [...room.game.deck.splice(0, room.game.rules.startingCards)], called: false };
 				room.game.playerList.push(playerId);
 				gameManager.resendGame(room);
