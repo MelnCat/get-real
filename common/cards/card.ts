@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { Game } from "../../server/game";
 import { randomGaussian } from "@/app/util/util";
+import { omit } from "radash";
 
 export interface Card {
 	type: string | number;
@@ -58,11 +59,27 @@ export const originalConstants = {
 		{ type: "skip", variety: "normal", count: 2 },
 		{ type: "reverse", variety: "normal", count: 2 },
 		{ type: "+4", variety: "wild", count: 4 },
-		{ type: " ", variety: "wild", count: 8 }
+		{ type: " ", variety: "wild", count: 8 },
 	],
 	amountPerNumber: 2,
 	amountPerWild: 0,
-	amountPerNumberOverride: { "0": 1 },
+	amountPerNumberOverride: { 0: 1 },
+	extra: [],
+} satisfies GameConstants;
+
+export const speedrun = {
+	colors: ["#555", "#ccc"],
+	wilds: [],
+	includeMulticolorWild: true,
+	numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+	amountPerNumber: 8,
+	amountPerWild: 4,
+	amountPerNumberOverride: { 0: 4 },
+	special: [
+		{ type: "skip", variety: "normal", count: 4 },
+		{ type: "reverse", variety: "normal", count: 4 },
+		{ type: "+1", variety: "wild", count: 4 },
+	],
 	extra: [],
 } satisfies GameConstants;
 
@@ -70,10 +87,51 @@ export const cursedConstants = {
 	colors: ["red", "blue", "yellow", "green", "orange", "purple", "#eee", "#111", "lime", "brown", "goldenrod", "teal"],
 	wilds: [],
 	includeMulticolorWild: true,
-	numbers: [2024, "π", 2, 3, 5, 7, 11, 13, 17, "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ρ",
-	 "σ", "τ", "υ", "φ", "χ", "ψ", "ω",  "Γ", "Δ", "Θ", "Λ", "Ξ", "Π",  "Σ", "Φ", "Ψ", "Ω"],
+	numbers: [
+		2024,
+		"π",
+		2,
+		3,
+		5,
+		7,
+		11,
+		13,
+		17,
+		"α",
+		"β",
+		"γ",
+		"δ",
+		"ε",
+		"ζ",
+		"η",
+		"θ",
+		"ι",
+		"κ",
+		"λ",
+		"μ",
+		"ν",
+		"ξ",
+		"ρ",
+		"σ",
+		"τ",
+		"υ",
+		"φ",
+		"χ",
+		"ψ",
+		"ω",
+		"Γ",
+		"Δ",
+		"Θ",
+		"Λ",
+		"Ξ",
+		"Π",
+		"Σ",
+		"Φ",
+		"Ψ",
+		"Ω",
+	],
 	amountPerNumber: 2,
-	amountPerWild: 1,
+	amountPerWild: 2,
 	amountPerNumberOverride: { π: 4 },
 	special: [
 		{ type: "+2", variety: "both", count: 4 },
@@ -95,19 +153,23 @@ export const cursedConstants = {
 		{ type: "skip", variety: "both", count: 2 },
 		{ type: "reverse", variety: "both", count: 2 },
 	],
-	extra: [{ color: ["blue", "#eee", "red"], type: "FR", count: 4 }, { color: ["#111", "red", "yellow"], type: "DE", count: 4 }],
+	extra: [
+		{ color: ["blue", "#eee", "red"], type: "FR", count: 4 },
+		{ color: ["#111", "red", "yellow"], type: "DE", count: 4 },
+	],
 } satisfies GameConstants;
 export const deckTypes = {
 	normal: defaultConstants,
 	normalWithSwap: {
 		...defaultConstants,
-		special: defaultConstants.special.concat({ type: "swap", variety: "wild", count: 4 })
+		special: defaultConstants.special.concat({ type: "swap", variety: "wild", count: 4 }),
 	},
 	original: originalConstants,
 	originalWithSwap: {
 		...originalConstants,
-		special: originalConstants.special.slice(0, -1).concat({ type: " ", variety: "wild", count: 4 }, { type: "swap", variety: "wild", count: 4 })
+		special: originalConstants.special.slice(0, -1).concat({ type: " ", variety: "wild", count: 4 }, { type: "swap", variety: "wild", count: 4 }),
 	},
+	speedrun,
 	cursed: cursedConstants,
 } satisfies Record<string, GameConstants>;
 
@@ -129,7 +191,7 @@ export const createDeck = (constants: GameConstants): Card[] => {
 			if (special.variety === "wild" || special.variety === "both") for (let i = 0; i < special.count; i++) deck.push({ type: special.type, color: wild });
 		}
 	}
-	deck.push(...structuredClone(constants.extra instanceof Function ? constants.extra() : constants.extra));
+	deck.push(...(constants.extra instanceof Function ? constants.extra() : constants.extra).flatMap(x => Array(x.count ?? 1).fill(omit(x, ["count"]))));
 	return [...Array(constants.copies ?? 1)].fill(deck).flat();
 };
 
@@ -164,12 +226,10 @@ export const getPickupValue = (card: Card) => {
 	if (card.type.endsWith("ˣ")) {
 		const base = +card.type.slice(0, -1);
 		if (isNaN(base)) return null;
-		return { type: "exp", value: base}
+		return { type: "exp", value: base };
 	}
 	const rawValue = card.type.slice(1);
-	const value = rawValue === "∞" ? Infinity :
-		rawValue === "π" ? Math.PI :
-		rawValue === "?" ? Math.ceil(Math.abs(randomGaussian(6, 4))) : +rawValue;
+	const value = rawValue === "∞" ? Infinity : rawValue === "π" ? Math.PI : rawValue === "?" ? Math.ceil(Math.abs(randomGaussian(6, 4))) : +rawValue;
 	if (isNaN(value)) return null;
 	if (card.type.startsWith("+")) return { type: "add", value };
 	if (card.type.startsWith("−")) return { type: "add", value: -value };
@@ -226,7 +286,6 @@ export const mapGroupBy = <T, K>(array: T[], mapper: (value: T) => K) => {
 	}
 	return map;
 };
-
 
 export interface GameRules {
 	pickupUntilPlayable: boolean;

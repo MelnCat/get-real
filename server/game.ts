@@ -184,7 +184,10 @@ export const gameManager = {
 			}
 		} else if (cards[0]?.type === "reverse") {
 			for (const _ of cards) game.order *= -1;
-			if (cards.length % 2 === 1) for (const player of game.playerList) players[player].socket.emit("game:effect", "reverse");
+			if (cards.length % 2 === 1) {
+				for (const player of game.playerList) players[player].socket.emit("game:effect", "reverse");
+				game.nextPlayer = game.playerList[(game.currIndex + game.order + game.playerList.length) % game.playerList.length];
+			}
 		}
 		if (game.pickup !== 0) {
 			game.pickup = modifyPickupValue(game.pickup, cards as Card[]) ?? game.pickup;
@@ -322,9 +325,9 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 
 		if (game.pickup > 0) for (const card of game.takeDeck(game.pickup)) game.players[socket.data.playerId].cards.push(card);
 		else {
-			const iterCount = Math.min(-game.pickup, game.players[game.playerList[0]].cards.length);
+			const iterCount = Math.min(-game.pickup, game.players[socket.data.playerId].cards.length);
 			for (let i = 0; i < iterCount; i++)
-				game.deck.push(...game.players[game.playerList[0]].cards.splice(Math.floor(Math.random() * game.players[game.playerList[0]].cards.length), 1));
+				game.deck.push(...game.players[socket.data.playerId].cards.splice(Math.floor(Math.random() * game.players[socket.data.playerId].cards.length), 1));
 		}
 		players[game.playerList[game.currIndex]].socket.emit("game:pickup", game.pickup);
 		if (game.players[socket.data.playerId].cards.length === 0) {

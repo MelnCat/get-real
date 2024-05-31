@@ -105,6 +105,7 @@ export default function GamePage() {
 			}
 			setSelected(x => {
 				const y = x.toSpliced(x.indexOf(id), 1);
+				if (y.length === 0) return y;
 				if (!canPlay(game.currentCard, game.hand.find(z => z.id === y[0])!)) return [];
 				const mismatch = y.findIndex((x, i, a) => i !== 0 && !canMatch(game.hand.find(z => z.id === a[i - 1])!, game.hand.find(z => z.id === x)!));
 				if (mismatch !== -1) return y.slice(0, mismatch);

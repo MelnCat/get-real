@@ -24,7 +24,7 @@ const handleConnect = (afterAuth: (socket: TypedSocket) => void) => (socket: Typ
 		if (!socket.data.playerId) return;
 		if (players[socket.data.playerId]?.socket !== undefined) {
 			const old = players[socket.data.playerId].socket;
-			old.disconnect();
+			if (old !== socket) old.disconnect();
 		}
 		players[socket.data.playerId] ??= { name, socket };
 		players[socket.data.playerId].socket = socket;
