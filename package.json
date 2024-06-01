@@ -10,6 +10,7 @@
 		"start": "NODE_ENV=production tsx server.ts"
 	},
 	"dependencies": {
+		"@million/lint": "^1.0.0-rc.18",
 		"@uidotdev/usehooks": "^2.4.1",
 		"font-color-contrast": "^11.1.0",
 		"framer-motion": "^11.2.6",

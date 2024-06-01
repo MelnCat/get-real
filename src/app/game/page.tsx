@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useAuth, useGame, useRoom } from "../util/context";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./game.module.scss";
 import { BackCard, Card, EmptyCard } from "@/components/Card";
 import { useMouse } from "@uidotdev/usehooks";
@@ -14,7 +14,7 @@ import fontColorContrast from "font-color-contrast";
 import React from "react";
 import { roboto } from "@/font";
 import { numberFormat } from "../util/format";
-const DeckCard = ({ index, length, ...other }: { index: number; length: number }) => {
+const InnerDeckCard = ({ index, length, ...other }: { index: number; length: number }) => {
 	const ref = useRef(null);
 	const modulus = length < 200 ? 1 : 2;
 	return (
@@ -40,7 +40,8 @@ const DeckCard = ({ index, length, ...other }: { index: number; length: number }
 		</CSSTransition>
 	);
 };
-const DiscardCard = ({ card, index, ...other }: { card: PlayedCard; index: number }) => {
+const DeckCard = React.memo(InnerDeckCard);
+const InnerDiscardCard = ({ card, index, ...other }: { card: PlayedCard; index: number }) => {
 	const ref = useRef(null);
 	return (
 		<CSSTransition
@@ -65,6 +66,7 @@ const DiscardCard = ({ card, index, ...other }: { card: PlayedCard; index: numbe
 		</CSSTransition>
 	);
 };
+const DiscardCard = React.memo(InnerDiscardCard);
 
 export default function GamePage() {
 	const room = useRoom();

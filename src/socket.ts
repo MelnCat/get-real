@@ -6,5 +6,5 @@ import parser from "socket.io-msgpack-parser";
 
 export const socket = io({ parser }) as TypedCSocket;
 socket.on("disconnect", e => {
-    location.reload();
+    if (process.env.NODE_ENV !== "development") location.reload();
 });
