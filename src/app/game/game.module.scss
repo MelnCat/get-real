@@ -117,12 +117,14 @@
 }
 .pickupIcon {
 	margin: auto;
-	position: relative;
+	position: absolute;
 	grid-row-start: 2;
 	grid-column-start: 2;
 	user-select: none;
 	font-size: 6em;
-	transform: translateZ(300px) rotateX(-50deg);
+    transform: translateZ(300px) rotateX(-50deg) translateX(-50%) translateX(0.5em);
+	left: 0;
+	top: 0;
 	text-shadow: 2px 2px 2px #00000055;
 	-webkit-text-stroke: black 12px;
 	font-weight: bold;

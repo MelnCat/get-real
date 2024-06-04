@@ -82,6 +82,21 @@ export const speedrun = {
 	],
 	extra: [],
 } satisfies GameConstants;
+export const test = {
+	colors: ["red", "blue", "purple"],
+	wilds: [],
+	includeMulticolorWild: true,
+	numbers: ["fish"],
+	amountPerNumber: 64,
+	amountPerWild: 4,
+	amountPerNumberOverride: {},
+	special: [
+		{ type: "2ˣ", variety: "wild", count: 4 },
+		{ type: "3ˣ", variety: "wild", count: 4 },
+		{ type: "^3", variety: "wild", count: 4 },
+	],
+	extra: [],
+} satisfies GameConstants;
 
 export const cursedConstants = {
 	colors: ["red", "blue", "yellow", "green", "orange", "purple", "#eee", "#111", "lime", "brown", "goldenrod", "teal"],
@@ -171,6 +186,7 @@ export const deckTypes = {
 	},
 	speedrun,
 	cursed: cursedConstants,
+	test
 } satisfies Record<string, GameConstants>;
 
 export const createDeck = (constants: GameConstants): Card[] => {

@@ -78,6 +78,7 @@ export default function GamePage() {
 	const [pickingUp, setPickingUp] = useState(false);
 	const handRef = useRef<HTMLDivElement | null>(null);
 	const justClicked = useRef<Record<string, number>>({});
+	const formattedPickup = useMemo(() => game?.pickup ? numberFormat.format(Math.abs(game.pickup)): "", [game?.pickup]);
 
 	useEffect(() => {
 		if (auth.name === null) router.replace("/setup");
@@ -124,7 +125,6 @@ export default function GamePage() {
 		}
 	};
 	const onRightClickCard = (event: React.MouseEvent | undefined, id: string) => {
-		event?.preventDefault();
 		if (room.state !== "play" || !game.canPlay || !game.yourTurn) return;
 		const card = game.hand.find(x => x.id === id);
 		if (card === undefined) return;
@@ -195,18 +195,20 @@ export default function GamePage() {
 					</TransitionGroup>
 				</button>
 				<div className={styles.discard} {...(game.lastPlayer === auth.name || (game.yourTurn && game.configurationState !== null) ? { "data-last-turn": true } : null)}>
+					{game.pickup !== 0 && (
+						<div className={`${styles.pickupIcon} ${roboto.className}`} style={{
+							fontSize: formattedPickup.length > 30 ? "3em" : formattedPickup.length > 20 ? "4em" : formattedPickup.length > 10 ? "5em" : ""
+						}}>
+							{game.pickup > 0 ? "+" : "−"}
+							{formattedPickup}
+						</div>
+					)}
 					<TransitionGroup component={null} exit={false}>
 						{game.lastDiscards.concat(game.currentCard).map((x, i, a) => (
 							<DiscardCard card={x} index={i} key={x.id} />
 						))}
 					</TransitionGroup>
 				</div>
-				{game.pickup !== 0 && (
-					<div className={`${styles.pickupIcon} ${roboto.className}`}>
-						{game.pickup > 0 ? "+" : "−"}
-						{numberFormat.format(Math.abs(game.pickup))}
-					</div>
-				)}
 			</div>
 			<div className={styles.bottomRow}>
 				<div className={styles.actionRow}>

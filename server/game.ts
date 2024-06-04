@@ -45,7 +45,7 @@ export interface ClientGameData {
 	canPlay: boolean;
 	pickedUp: boolean;
 	configurationState: null | "color" | "swap-player";
-	pickup: number;
+	rawPickup: string;
 	lastPlayer: string;
 	winners: { name: string; extra?: string }[];
 	rules: GameRules;
@@ -53,6 +53,7 @@ export interface ClientGameData {
 
 export interface EnhancedClientGameData extends ClientGameData {
 	get yourTurn(): boolean;
+	get pickup(): number;
 }
 
 export interface Game {
@@ -153,7 +154,7 @@ export const gameManager = {
 			canPlay: game.canPlay,
 			pickedUp: game.pickedUp,
 			configurationState: game.configurationState?.type ?? null,
-			pickup: game.pickup,
+			rawPickup: String(game.pickup),
 			lastPlayer: players[game.lastPlayer]?.name,
 			winners: game.winners.map(x => ({ name: players[x.id].name, extra: x.extra })),
 			rules: game.rules,

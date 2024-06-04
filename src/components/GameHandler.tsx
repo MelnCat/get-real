@@ -56,6 +56,9 @@ export const GameHandler = ({ children }: { children: React.ReactNode }) => {
 				get yourTurn() {
 					return name === this.playerList[this.currIndex];
 				},
+				get pickup() {
+					return +this.rawPickup;
+				}
 			}));
 		});
 	}, [game, name]);
