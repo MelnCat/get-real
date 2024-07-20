@@ -1,0 +1,53 @@
+.main {
+	--s: 100px;
+	--c1: #b6d2b8;
+	--c2: #7ea27c;
+
+	--_g: var(--c1) 90deg, #0000 90.5deg;
+	background: conic-gradient(from -45deg, var(--_g)), conic-gradient(from 135deg, var(--_g)) calc(var(--s) / 2) 0, var(--c2);
+	background-size: var(--s) var(--s);
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+}
+
+.box {
+	background-color: #ffffffee;
+	backdrop-filter: blur(3px	);
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	width: calc(100% - 6em);
+	margin: auto;
+	height: calc(100% - 6em);
+	padding: 1em;
+	h1 {
+		background-color: #453483;
+		color: #f3ea95;
+		font-size: 4em;
+		padding: 0.1em 1em;
+		width: 100%;
+		text-align: center;
+	}
+	p {
+		background-color: #f1eff5;
+		color: #000000;
+		font-size: 1.2em;
+		padding: 0.5em 1em;
+		width: 100%;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+	}
+}
+.cardBar {
+	display: flex;
+	align-items: center;
+	gap: 0.2em;
+	justify-content: center;
+}
+.submit {
+	display: flex;
+}
