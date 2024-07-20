@@ -12,50 +12,56 @@
 		repeating-conic-gradient(from 30deg, var(--c1) 0 60deg, var(--c2) 0 120deg, var(--c3) 0 180deg);
 	background-size: var(--s) calc(var(--s) * 0.577);
 }
-.createInput {
-	height: 2em;
-	font-size: 1em;
-	padding: 0.25em 0.3em;
+.box {
+	background-color: #ffffffee;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	width: calc(100% - 6em);
+	min-height: calc(100dvh - 6em);
+	margin: auto;
+	padding: 1em;
+	header {
+		background-color: #3b3169;
+		color: #ffffff;
+		font-size: 2em;
+		padding: 0.1em 1em;
+		width: 100%;
+		text-align: center;
+		@media screen and (max-width: 500px) {
+			font-size: 2.5em;
+			padding: 0.2em 0.3em;
+		}
+	}
 }
-.createButton {
-	background-color: #00000033;
-	padding: 0.5em 0.6em;
-	border-radius: 5px;
-	font-weight: bold;
-	transition: background-color 0.2s;
-	&:hover {
-		background-color: #00000044;
+.panel {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	flex-grow: 1;
+	header {
+		background-color: #555588;
+		h2 {
+			font-size: 1em;
+		}
 	}
-	&:active {
-		background-color: #00000066;
-	}
+	flex-wrap: wrap;
 }
 .roomList {
-	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
-	padding: 0.5em;
-	gap: 0.5em;
-}
-
-.room {
+	flex-grow: 2;
+    flex-basis: 332px;
+	background-color: #d6d6e2;
 	display: flex;
 	flex-direction: column;
-	gap: 0.25em;
-	background-color: #00000022;
-	padding: 0.5em 0.6em;
-	border-radius: 5px;
-	button {
-		background-color: #00000033;
-		padding: 0.5em 0.6em;
-		border-radius: 5px;
-		font-weight: bold;
-		transition: background-color 0.2s;
-		&:hover {
-			background-color: #00000044;
-		}
-		&:active {
-			background-color: #00000066;
-		}
+}
+.noRooms {
+	margin: auto;
+}
+.createPanel {
+	flex-grow: 1;
+    flex-basis: 332px;
+	background-color: #c6c6cf;
+	header {
+		background-color: #505057;
 	}
 }
