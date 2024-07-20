@@ -19,7 +19,6 @@
 	flex-direction: column;
 	width: calc(100% - 6em);
 	margin: auto;
-	height: calc(100% - 6em);
 	padding: 1em;
 	h1 {
 		background-color: #453483;
@@ -29,6 +28,10 @@
 		width: 100%;
 		text-align: center;
 		text-shadow: 6px 6px #00000099;
+		@media screen and (max-width: 500px) {
+			font-size: 2.5em;
+			padding: 0.2em 0.3em;
+		}
 	}
 }
 .description {
@@ -39,7 +42,7 @@
 	padding: 0.5em 1em;
 	width: 100%;
 	text-align: center;
-	line-height: 1.5em;
+	line-height: 1.6em;
 	.colors {
 		background-image: linear-gradient(90deg, red, orange, yellow, green, blue, purple);
 		background-clip: text;
@@ -51,10 +54,37 @@
 	align-items: center;
 	gap: 0.2em;
 	justify-content: center;
-	margin-bottom: 0.2em;
+	margin: 0.5em 0;
+	flex-wrap: wrap;
 }
 .submit {
 	display: flex;
+	background-color: #f6f6f8;
+	font-weight: 420;
+	color: #000000;
+	font-size: 1.4em;
+	padding: 0.5em 1em;
+	width: 100%;
+	justify-content: center;
+	gap: 0.4em;
+	flex-wrap: wrap;
+	input {
+		font-size: 0.9em;
+		padding: 0.1em;
+	}
+	button {
+		background-color: #00000022;
+		font-size: 0.8em;
+		font-weight: bold;
+		padding: 0.2em 0.4em;
+		transition: background-color 0.1s;
+		&:hover {
+			background-color: #00000044;
+		}
+		&:active {
+			background-color: #00000066;
+		}
+	}
 }
 .getReal {
 	color: #d6daec;

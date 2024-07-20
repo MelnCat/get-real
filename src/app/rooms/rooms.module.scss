@@ -3,6 +3,14 @@
 	flex-direction: column;
 	gap: 0.3em;
 	padding: 0.5em;
+	--s: 200px;
+	--c1: #525780;
+	--c2: #294170;
+	--c3: #2f244c;
+
+	background: repeating-conic-gradient(from 30deg, #0000 0 120deg, var(--c3) 0 180deg) calc(0.5 * var(--s)) calc(0.5 * var(--s) * 0.577),
+		repeating-conic-gradient(from 30deg, var(--c1) 0 60deg, var(--c2) 0 120deg, var(--c3) 0 180deg);
+	background-size: var(--s) calc(var(--s) * 0.577);
 }
 .createInput {
 	height: 2em;
@@ -25,7 +33,7 @@
 .roomList {
 	display: flex;
 	flex-wrap: wrap;
-	width: 100%;	
+	width: 100%;
 	padding: 0.5em;
 	gap: 0.5em;
 }

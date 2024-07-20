@@ -9,6 +9,7 @@ export default function SetupPage() {
 	const room = useRoom();
 	const router = useRouter();
 	const [input, setInput] = useState("");
+	const [submitted, setSubmitted] = useState(false);
 	const auth = useAuth();
 	useEffect(() => {
 		if (room !== undefined && room !== null) router.replace("/room");
@@ -16,6 +17,7 @@ export default function SetupPage() {
 	const submit = (value: string) => {
 		if (room !== null && room !== undefined) return;
 		auth.setName(value);
+		setSubmitted(true);
 		router.push("/rooms");
 	};
 	return (
@@ -24,15 +26,15 @@ export default function SetupPage() {
 				<h1>Welcome to Get Real!</h1>
 				<section className={styles.description}>
 					<section className={styles.cardBar}>
-						<DualCard flipped color="red" symbol="G" />
-						<DualCard flipped color="blue" symbol="E" />
-						<DualCard flipped color="multicolor" symbol="T" />
-						<DualCard flipped color="purple" symbol="+2" />
-						<DualCard flipped color="orange" symbol="R" />
-						<DualCard flipped color="green" symbol="E" />
-						<DualCard flipped color="multicolor" symbol="A" />
-						<DualCard flipped color="yellow" symbol="L" />
-						<DualCard flipped color="url('/mewhenthe.gif')" symbol="+∞" />
+						<DualCard height="6em" flipped color="red" symbol="G" />
+						<DualCard height="6em"  flipped color="blue" symbol="E" />
+						<DualCard height="6em"  flipped color="multicolor" symbol="T" />
+						<DualCard height="6em"  flipped color="purple" symbol="+2" />
+						<DualCard height="6em"  flipped color="orange" symbol="R" />
+						<DualCard height="6em"  flipped color="green" symbol="E" />
+						<DualCard height="6em"  flipped color="multicolor" symbol="A" />
+						<DualCard height="6em"  flipped color="yellow" symbol="L" />
+						<DualCard height="6em"  flipped color="url('/mewhenthe.gif')" symbol="+∞" />
 					</section>
 					<span className={styles.getReal}>GET REAL</span> is a card game based on UNO™, but with additional rules and cards!
 					<br />
@@ -42,8 +44,8 @@ export default function SetupPage() {
 				</section>
 				<section className={styles.submit}>
 					<p>Pick a username:</p>
-					<input value={input} onChange={e => setInput(e.target.value)}></input>
-					<button onClick={() => input && submit(input)}>Submit</button>
+					<input aria-label="Username" name="username" value={input} onChange={e => setInput(e.target.value)} disabled={submitted}></input>
+					<button onClick={() => input && submit(input)} disabled={submitted}>Submit</button>
 				</section>
 			</article>
 		</main>
