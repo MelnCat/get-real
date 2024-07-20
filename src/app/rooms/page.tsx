@@ -12,42 +12,8 @@ export default function RoomsPage() {
 	const room = useRoom();
 	const router = useRouter();
 	const auth = useAuth();
-	const roomList: RoomListData[] = [
-		//create testing entries
-		{
-			name: "test1",
-			owner: "test",
-			playerCount: 2,
-			max: 5,
-			lateJoins: false,
-			state: "lobby",
-		},
-		{
-			name: "123",
-			owner: "aefa",
-			playerCount: 2,
-			max: 12,
-			lateJoins: false,
-			state: "lobby",
-		},
-		{
-			name: "1321",
-			owner: "taest4",
-			playerCount: 4,
-			max: 15,
-			lateJoins: true,
-			state: "play",
-		},
-		{
-			name: "awefefae",
-			owner: "tesawt2",
-			playerCount: 5,
-			max: 5,
-			lateJoins: false,
-			state: "lobby",
-		},
-	];
-	useRoomList();
+	const roomList = useRoomList();
+	const [submitted, setSubmitted] = useState(false);
 	const [name, setName] = useState("");
 	const [option, setOption] = useState("normal");
 	const [rules, setRules] = useState<Record<keyof typeof defaultRules, string>>(
@@ -59,7 +25,30 @@ export default function RoomsPage() {
 		if (auth.name === null) router.replace("/setup");
 		else if (room !== null && room !== undefined) router.replace("/room");
 	}, [room, router, auth]);
-	const skeletons = [...Array(5)].map((_, i) => <RoomListItem room={null} key={i} canJoin={false} />);
+	const skeletons = (
+		<section className={styles.roomGrid}>
+			{[...Array(5)].map((_, i) => (
+				<RoomListItem room={null} key={i} canJoin={false} setSubmitted={() => {}} />
+			))}
+		</section>
+	);
+	const createRoom = () => {
+		setSubmitted(true);
+		socket.emit(
+			"room:create",
+			{
+				name,
+				unlisted: false,
+				deckType: option,
+				rules: Object.fromEntries(Object.entries(rules).map(x => [x[0], JSON.parse(x[1])])) as GameRules,
+				lateJoins,
+				max,
+			},
+			() => {
+				router.push("/room");
+			}
+		);
+	};
 	return (
 		<main className={styles.main}>
 			<article className={styles.box}>
@@ -74,13 +63,13 @@ export default function RoomsPage() {
 						{roomList === undefined ? (
 							skeletons
 						) : roomList.length === 0 ? (
-							<p className={styles.noRooms}>There are no public rooms currently.</p>
+							<p className={styles.noRooms}>There are currently no public rooms.</p>
 						) : (
 							<section className={styles.roomGrid}>
 								{roomList
 									.filter(x => (x.lateJoins ? x.state !== "end" : x.state === "lobby"))
 									.map(x => (
-										<RoomListItem room={x} key={x.name} canJoin={true} />
+										<RoomListItem room={x} key={x.name} canJoin={true} setSubmitted={setSubmitted} />
 									))}
 							</section>
 						)}
@@ -90,7 +79,10 @@ export default function RoomsPage() {
 							<h2>Create New Room</h2>
 						</header>
 						<section className={styles.createOptions}>
-							<input className={styles.createInput} placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
+							<div className={styles.createRoomName}>
+								<p>Name: </p>
+								<input className={styles.createInput} placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
+							</div>
 							<div>
 								Deck:{" "}
 								<select value={option} onChange={x => setOption(x.target.value)}>
@@ -115,26 +107,7 @@ export default function RoomsPage() {
 							<div>
 								Max Players: <input type="number" value={max} onChange={x => setMax(+x.target.value)} />
 							</div>
-							<button
-								className={styles.createButton}
-								onClick={() =>
-									name.trim() &&
-									socket.emit(
-										"room:create",
-										{
-											name,
-											unlisted: false,
-											deckType: option,
-											rules: Object.fromEntries(Object.entries(rules).map(x => [x[0], JSON.parse(x[1])])) as GameRules,
-											lateJoins,
-											max,
-										},
-										() => {
-											router.push("/room");
-										}
-									)
-								}
-							>
+							<button className={styles.createButton} onClick={() => name.trim() && createRoom()}>
 								Create
 							</button>
 						</section>

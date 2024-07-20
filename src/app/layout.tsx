@@ -2,6 +2,7 @@ import { GameHandler } from "@/components/GameHandler";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
+import "react-loading-skeleton/dist/skeleton.css";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });

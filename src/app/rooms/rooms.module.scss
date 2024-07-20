@@ -67,6 +67,7 @@
 	flex-direction: column;
 	h1 {
 		font-size: 1.75em;
+		width: 100%;
 	}
 	button {
 		background-color: #00000022;
@@ -111,5 +112,12 @@
 	}
 }
 .createOptions {
-	
+	padding: 1em;
+}
+.createRoomName {
+	display: flex;
+	width: 100%;
+	input {
+		flex-grow: 1;
+	}
 }
