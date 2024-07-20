@@ -10,12 +10,10 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
 }
 
 .box {
 	background-color: #ffffffee;
-	backdrop-filter: blur(3px	);
 	display: flex;
 	align-items: center;
 	flex-direction: column;
@@ -30,16 +28,22 @@
 		padding: 0.1em 1em;
 		width: 100%;
 		text-align: center;
+		text-shadow: 6px 6px #00000099;
 	}
-	p {
-		background-color: #f1eff5;
-		color: #000000;
-		font-size: 1.2em;
-		padding: 0.5em 1em;
-		width: 100%;
-		text-align: center;
-		display: flex;
-		flex-direction: column;
+}
+.description {
+	background-color: #f1eff5;
+	font-weight: 420;
+	color: #000000;
+	font-size: 1.2em;
+	padding: 0.5em 1em;
+	width: 100%;
+	text-align: center;
+	line-height: 1.5em;
+	.colors {
+		background-image: linear-gradient(90deg, red, orange, yellow, green, blue, purple);
+		background-clip: text;
+		color: #00000022;
 	}
 }
 .cardBar {
@@ -47,7 +51,20 @@
 	align-items: center;
 	gap: 0.2em;
 	justify-content: center;
+	margin-bottom: 0.2em;
 }
 .submit {
 	display: flex;
+}
+.getReal {
+	color: #d6daec;
+	text-shadow: #000000aa -4px 4px;
+	-webkit-text-stroke: #000000cc 5px;
+	text-align: center;
+	letter-spacing: -1px;
+	line-height: 30px;
+	font-size: 1.2em;
+	paint-order: stroke fill;
+	font-weight: 500;
+	margin: 0 0.08em;
 }

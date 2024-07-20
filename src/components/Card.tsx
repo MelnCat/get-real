@@ -61,7 +61,7 @@ const ringBackgroundForColor = (color: string | string[], colorOverride: string 
 	if (real instanceof Array && real.length > 1) {
 		return `conic-gradient(${real.flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;
 	}
-	return typeof real === "string" ? real : real[0];
+	return typeof real === "string" ? real.startsWith("url") ? "" : real : real[0];
 };
 
 interface CardOptions {
@@ -88,6 +88,7 @@ const CardRing = ({ color, colorOverride }: { color: string | string[]; colorOve
 };
 
 export const Card = ({ color, symbol, flipped = false, size = sizeForSymbol(symbol), spacing = spacingForSymbol(symbol), height = "100px", pinned = false, colorOverride }: CardOptions) => {
+	const cardBackground = cardBackgroundForColor(color, colorOverride);
 	return (
 		<article
 			className={`${roboto.className} ${styles.cardWrapper}`}
@@ -96,7 +97,9 @@ export const Card = ({ color, symbol, flipped = false, size = sizeForSymbol(symb
 			<div
 				className={styles.card}
 				style={{
-					background: cardBackgroundForColor(color, colorOverride),
+					[cardBackground.includes("url") || cardBackground.includes("gradient") ? "background-image" : "background-color"]: cardBackground,
+					backgroundPosition: "center center",
+					backgroundSize: "cover",
 					"--color-override": colorOverride ?? "",
 				}}
 				data-size={size}

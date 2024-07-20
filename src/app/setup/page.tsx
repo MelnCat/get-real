@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth, useRoom } from "../util/context";
 import styles from "./setup.module.scss";
-import { Card } from "@/components/Card";
+import { Card, DualCard } from "@/components/Card";
 
 export default function SetupPage() {
 	const room = useRoom();
@@ -22,19 +22,26 @@ export default function SetupPage() {
 		<main className={styles.main}>
 			<article className={styles.box}>
 				<h1>Welcome to Get Real!</h1>
-				<p>
-					Get Real is a card game based on UNO™,
+				<section className={styles.description}>
 					<section className={styles.cardBar}>
-					<Card color="red" symbol="G" />
-					<Card color="blue" symbol="E" />
-					<Card color="multicolor" symbol="T" />
-					<Card color="red" symbol="R" />
-					<Card color="red" symbol="E" />
-					<Card color="red" symbol="A" />
-					<Card color="red" symbol="L" />
+						<DualCard flipped color="red" symbol="G" />
+						<DualCard flipped color="blue" symbol="E" />
+						<DualCard flipped color="multicolor" symbol="T" />
+						<DualCard flipped color="purple" symbol="+2" />
+						<DualCard flipped color="orange" symbol="R" />
+						<DualCard flipped color="green" symbol="E" />
+						<DualCard flipped color="multicolor" symbol="A" />
+						<DualCard flipped color="yellow" symbol="L" />
+						<DualCard flipped color="url('/mewhenthe.gif')" symbol="+∞" />
 					</section>
-				</p>
+					<span className={styles.getReal}>GET REAL</span> is a card game based on UNO™, but with additional rules and cards!
+					<br />
+					Ever wanted more <span className={styles.colors}>colors</span>? More pickups? A +∞? We have it all!
+					<br />
+					Begin by entering a username below.
+				</section>
 				<section className={styles.submit}>
+					<p>Pick a username:</p>
 					<input value={input} onChange={e => setInput(e.target.value)}></input>
 					<button onClick={() => input && submit(input)}>Submit</button>
 				</section>
