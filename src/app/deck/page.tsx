@@ -2,10 +2,10 @@
 import { BackCard, Card } from "@/components/Card";
 import styles from "./deck.module.scss";
 import { createDeck, mapGroupBy, deckTypes } from "../../../common/cards/card";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Deck() {
+const Deck = () => {
 	const searchParams = useSearchParams();
 	const decks = useMemo(
 		() =>
@@ -36,4 +36,9 @@ export default function Deck() {
 			))}
 		</main>
 	);
+}
+export default function DeckPage() {
+	return <Suspense>
+		<Deck />
+	</Suspense>
 }
