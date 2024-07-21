@@ -18,12 +18,14 @@ import {
 import { shuffle } from "../common/util/util";
 import { PlayingRoom, Room, StartingRoom, roomManager } from "./room";
 import { players } from "./auth";
+import { requiredVotekickCount } from "@/app/util/util";
 
 export interface GameC2SEvents {
 	"game:play": (cards: string[]) => void;
 	"game:configure": (options: { type: "color"; color: number } | { type: "swap-player"; player: string }) => void;
 	"game:pickup": () => void;
 	"game:call": () => void;
+	"game:votekick": () => void;
 }
 export interface GameS2CEvents {
 	"game:data": (data: ClientGameData) => void;
@@ -31,6 +33,7 @@ export interface GameS2CEvents {
 	"game:pickup": (count: number) => void;
 	"game:call": (from: string) => void;
 	"game:win": () => void;
+	"game:votekicked": (player: string) => void;
 }
 
 export interface ClientGameData {
@@ -49,6 +52,8 @@ export interface ClientGameData {
 	lastPlayer: string;
 	winners: { name: string; extra?: string }[];
 	rules: GameRules;
+	votekickCount: number;
+	votekicked: boolean;
 }
 
 export interface EnhancedClientGameData extends ClientGameData {
@@ -85,6 +90,7 @@ export interface Game {
 	takeDeck(count: number): PlayedCard[];
 	takeCard(): PlayedCard | null;
 	rules: GameRules;
+	votekickers: string[];
 }
 
 export const gameManager = {
@@ -116,6 +122,7 @@ export const gameManager = {
 			lastPlayer: "",
 			winners: [],
 			rules: room.rules,
+			votekickers: [],
 			takeDeck(count: number) {
 				const took = this.deck.splice(0, count);
 				if (took.length < count) {
@@ -158,6 +165,8 @@ export const gameManager = {
 			lastPlayer: players[game.lastPlayer]?.name,
 			winners: game.winners.map(x => ({ name: players[x.id].name, extra: x.extra })),
 			rules: game.rules,
+			votekickCount: game.votekickers.length,
+			votekicked: game.votekickers.includes(playerId)
 		};
 	},
 	byPlayer(playerId: string) {
@@ -167,7 +176,7 @@ export const gameManager = {
 	},
 	nextPlayer(cards: PlayedCard[], game: Game) {
 		game.lastPlayer = game.playerList[game.currIndex];
-
+		game.votekickers = [];
 		game.canPlay = true;
 
 		if (game.deck.length === 0) {
@@ -244,6 +253,18 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 				players[id].socket.emit("game:pickup", game.rules.unrealPenalty);
 			}
 		}
+	});
+	socket.on("game:votekick", () => {
+		const game = gameManager.byPlayer(socket.data.playerId);
+		if (game === null) return;
+		if (game.playerList[game.currIndex] === socket.data.playerId) return;
+		if (game.votekickers.includes(socket.data.playerId)) return;
+		game.votekickers.push(socket.data.playerId);
+		if (game.votekickers.length >= requiredVotekickCount(game.playerList.length)) {
+			for (const player of game.playerList) players[player].socket.emit("game:votekicked", players[game.playerList[game.currIndex]].name);
+			roomManager.leave(game.playerList[game.currIndex]);
+		}
+		gameManager.resendGame(game.room);
 	});
 	socket.on("game:play", cardIds => {
 		const game = gameManager.byPlayer(socket.data.playerId);

@@ -1,6 +1,6 @@
 import { Card } from "@/components/Card";
 import { deckTypes } from "../../common/cards/card";
-import styles from "../app/rooms/rooms.module.scss";
+import styles from "./RoomSettings.module.scss";
 
 const DeckTypeIcon = ({ name, children }: { name: string; children?: React.ReactNode }) => {
 	return (

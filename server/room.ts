@@ -16,15 +16,20 @@ export interface RoomCreateOptions {
 export interface ClientRoomData {
 	name: string;
 	owner: string;
+	deckType: GameConstants;
+	deckTypeString: string;
 	players: string[];
 	lateJoins: boolean;
 	state: Room["state"];
 	max: number;
+	rules: GameRules;
+	unlisted: boolean;
 }
 export interface RoomC2SEvents {
 	"room:create": (options: RoomCreateOptions, cb: EventCallback<boolean>) => void;
 	"room:config": (options: RoomCreateOptions) => void;
 	"room:join": (roomName: string) => void;
+	"room:kick": (player: string) => void;
 	"room:start": () => void;
 	"room:leave": () => void;
 }
@@ -39,14 +44,7 @@ export interface RoomListData {
 export interface RoomS2CEvents {
 	"room:list": (rooms: RoomListData[]) => void;
 	"room:data": (
-		room: {
-			name: string;
-			owner: string;
-			players: string[];
-			lateJoins: boolean;
-			max: number;
-			state: Room["state"];
-		} | null
+		room: ClientRoomData | null
 	) => void;
 }
 
@@ -58,6 +56,7 @@ export interface BaseRoom {
 	max: number;
 	lateJoins: boolean;
 	deckType: GameConstants;
+	deckTypeString: string;
 	rules: GameRules;
 	createdAt: number;
 }
@@ -126,6 +125,10 @@ export const roomManager = {
 			lateJoins: room.lateJoins,
 			state: room.state,
 			max: room.max,
+			deckType: room.deckType,
+			deckTypeString: room.deckTypeString,
+			rules: room.rules,
+			unlisted: room.unlisted,
 		};
 	},
 	createListData(room: Room) {
@@ -156,9 +159,10 @@ export const roomManager = {
 			name: options.name,
 			players: [owner],
 			unlisted: options.unlisted,
+			deckTypeString: options.deckType,
 			deckType: (options.deckType === "custom" ? options.customDeckType : deckTypes[options.deckType as keyof typeof deckTypes]) ?? defaultConstants,
 			rules: options.rules,
-			createdAt: Date.now()
+			createdAt: Date.now(),
 		};
 		this._roomPlayerCache[owner] = room;
 		this.rooms[room.name] = room;
@@ -177,7 +181,55 @@ export const roomManager = {
 		for (const room of Object.values(this.rooms)) {
 			if (room.createdAt + 1000 * 60 * 60 * 24 < Date.now()) this.deleteRoom(room.name);
 		}
-	}
+	},
+	leave(playerId: string) {
+		const room = roomManager.byPlayer(playerId);
+		if (room === undefined) return;
+		room.players = room.players.filter(x => x !== playerId);
+		if (room.players.length === 0) {
+			delete roomManager._roomPlayerCache[playerId];
+			roomManager.deleteRoom(room.name);
+			roomManager.resendPlayerData(playerId, undefined);
+			for (const player of Object.values(players)) {
+				roomManager.sendPublicRooms(player.socket);
+			}
+			return;
+		}
+		switch (room.state) {
+			case "lobby":
+				break;
+			case "starting":
+			case "play":
+			case "end": {
+				const game = room.game;
+				if (game.playerList[game.currIndex] === playerId) {
+					game.playerList = game.playerList.filter(x => x !== playerId);
+					game.configurationState = null;
+					game.canPlay = true;
+					game.currIndex = game.playerList.indexOf(game.nextPlayer);
+					game.pickedUp = false;
+					game.nextPlayer = game.playerList[(game.currIndex + game.order + game.playerList.length) % game.playerList.length];
+					game.votekickers = [];
+				} else if (game.nextPlayer === playerId) {
+					const currentPlayer = game.playerList[game.currIndex];
+					game.playerList = game.playerList.filter(x => x !== playerId);
+					game.currIndex = game.playerList.indexOf(currentPlayer);
+					game.nextPlayer = game.playerList[(game.currIndex + game.order + game.playerList.length) % game.playerList.length];
+				} else {
+					game.playerList = game.playerList.filter(x => x !== playerId);
+				}
+				game.deck.push(...game.players[playerId].cards);
+				game.deck = shuffle(game.deck);
+				delete game.players[playerId];
+				gameManager.resendGame(room as StartingRoom | PlayingRoom);
+			}
+		}
+		room.players = room.players.filter(x => x !== playerId);
+		if (room.owner === playerId) room.owner = room.players[Math.floor(Math.random() * room.players.length)];
+		delete roomManager._roomPlayerCache[playerId];
+		roomManager.resendData(room.name);
+		roomManager.resendPlayerData(playerId, undefined);
+	},
 };
 
 export const registerRoomEvents = (io: TypedServer, socket: TypedSocket) => {
@@ -199,6 +251,8 @@ export const registerRoomEvents = (io: TypedServer, socket: TypedSocket) => {
 		room.max = options.max;
 		room.lateJoins = options.lateJoins;
 		room.unlisted = options.unlisted;
+		room.deckType = (options.deckType === "custom" ? options.customDeckType : deckTypes[options.deckType as keyof typeof deckTypes]) ?? defaultConstants;
+		room.deckTypeString = options.deckType;
 		roomManager.resendData(room.name);
 	});
 	socket.on("room:start", () => {
@@ -211,50 +265,13 @@ export const registerRoomEvents = (io: TypedServer, socket: TypedSocket) => {
 		gameManager.startGame(io, room);
 	});
 	socket.on("room:leave", () => {
+		roomManager.leave(socket.data.playerId);
+	});
+	socket.on("room:kick", player => {
 		const room = roomManager.byPlayer(socket.data.playerId);
-		if (room === undefined) return;
-		room.players = room.players.filter(x => x !== socket.data.playerId);
-		if (room.players.length === 0) {
-			delete roomManager._roomPlayerCache[socket.data.playerId];
-			roomManager.deleteRoom(room.name);
-			roomManager.resendPlayerData(socket.data.playerId, undefined);
-			for (const player of Object.values(players)) {
-				roomManager.sendPublicRooms(player.socket);
-			}
-			return;
-		}
-		switch (room.state) {
-			case "lobby":
-				break;
-			case "starting":
-			case "play":
-			case "end": {
-				const game = room.game;
-				if (game.playerList[game.currIndex] === socket.data.playerId) {
-					game.playerList = game.playerList.filter(x => x !== socket.data.playerId);
-					game.configurationState = null;
-					game.canPlay = true;
-					game.currIndex = game.playerList.indexOf(game.nextPlayer);
-					game.pickedUp = false;
-					game.nextPlayer = game.playerList[(game.currIndex + game.order + game.playerList.length) % game.playerList.length];
-				} else if (game.nextPlayer === socket.data.playerId) {
-					const currentPlayer = game.playerList[game.currIndex];
-					game.playerList = game.playerList.filter(x => x !== socket.data.playerId);
-					game.currIndex = game.playerList.indexOf(currentPlayer);
-					game.nextPlayer = game.playerList[(game.currIndex + game.order + game.playerList.length) % game.playerList.length];
-				} else {
-					game.playerList = game.playerList.filter(x => x !== socket.data.playerId);
-				}
-				game.deck.push(...game.players[socket.data.playerId].cards);
-				game.deck = shuffle(game.deck);
-				delete game.players[socket.data.playerId];
-				gameManager.resendGame(room as StartingRoom | PlayingRoom);
-			}
-		}
-		room.players = room.players.filter(x => x !== socket.data.playerId);
-		if (room.owner === socket.data.playerId) room.owner = room.players[Math.floor(Math.random() * room.players.length)];
-		delete roomManager._roomPlayerCache[socket.data.playerId];
-		roomManager.resendData(room.name);
-		roomManager.resendPlayerData(socket.data.playerId, undefined);
+		if (room === undefined || room.owner !== socket.data.playerId) return;
+		const matched = room.players.find(x => players[x].name === player);
+		if (matched === undefined) return;
+		roomManager.leave(matched);
 	});
 };

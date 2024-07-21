@@ -1,15 +1,33 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useAuth, useRoom } from "../util/context";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { socket } from "@/socket";
 import styles from "./room.module.scss";
+import { RoomSettings } from "@/components/RoomSettings";
+import { RoomCreateOptions } from "../../../server/room";
 
 export default function RoomPage() {
 	const room = useRoom();
 	const router = useRouter();
 	const auth = useAuth();
+	const settings = useMemo<RoomCreateOptions | null>(() => {
+		if (room === null || room === undefined) return null;
+		return {
+			name: room.name,
+			deckType: room.deckTypeString,
+			customDeckType: room.deckType,
+			lateJoins: room.lateJoins,
+			max: room.max,
+			rules: room.rules,
+			unlisted: room.unlisted,
+		};
+	}, [room]);
+	const updateSettings = (cb: (settings: RoomCreateOptions) => RoomCreateOptions) => {
+		if (room?.owner !== auth.name || settings === null) return;
+		socket.emit("room:config", cb(settings));
+	};
 	useEffect(() => {
 		if (auth.name === null) router.replace("/setup");
 		else if (room === null) router.replace("/rooms");
@@ -28,27 +46,42 @@ export default function RoomPage() {
 				<header>
 					<h1>{room ? `Room: ${room.name}` : <Skeleton />}</h1>
 				</header>
-				<section className={styles.players}>
-					<h1>
-						Players ({room?.players.length}/{room?.max})
-					</h1>
-					<ul>
-						{room ? (
-							room.players.map(x => (
-								<li key={x}>
-									{x}
-									{room.owner === x ? <span>OWNER</span> : null}
-								</li>
-							))
-						) : (
-							<Skeleton count={4} />
-						)}
-					</ul>
-				</section>
-				<section className={styles.buttonRow}>
-					{room?.owner === auth.name ? <button onClick={onClickStart}>Start</button> : ""}
-					<button onClick={onClickLeave}>Leave</button>
-				</section>
+				<article className={styles.containerBox}>
+					<section className={styles.playerList}>
+						<header>
+							<h2>
+								Players ({room?.players.length ?? "?"}/{room?.max ?? "?"})
+							</h2>
+						</header>
+						<section className={styles.playerGrid}>
+							{(room ? room.players : [null, null]).map((x, i) => (
+								<div className={styles.player} key={x ?? i}>
+									<h1>{x ?? <Skeleton/>}</h1>
+									{<p className={styles.role}>{x === null ? <Skeleton /> : x === room?.owner ? "Owner" : "Player"}</p>}
+									{room?.owner === auth.name && x !== room?.owner && <button onClick={() => x && socket.emit("room:kick", x)}>Kick</button>}
+								</div>
+							))}
+						</section>
+					</section>
+					<section className={styles.actionPanel}>
+						<header>
+							<h2>Room</h2>
+						</header>
+						<section className={styles.roomOptions}>
+							<RoomSettings setSettings={updateSettings} settings={settings} disabled={room?.owner !== auth.name} />{" "}
+							{room?.owner === auth.name ? (
+								<button className={styles.actionButton} onClick={onClickStart}>
+									Start Game
+								</button>
+							) : (
+								""
+							)}
+							<button className={styles.actionButton} onClick={onClickLeave}>
+								Leave Room
+							</button>
+						</section>
+					</section>
+				</article>
 			</article>
 		</main>
 	);
