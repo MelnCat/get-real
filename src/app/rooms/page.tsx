@@ -83,8 +83,8 @@ export default function RoomsPage() {
 								<p>Name: </p>
 								<input className={styles.createInput} placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
 							</div>
-							<div className={styles.deckSelect}>
-								Deck:
+							<div className={styles.rules}>
+							<h3>Deck</h3>
 								<div className={styles.deckButtons}>
 									{Object.keys(deckTypes).map(x => (
 										<button

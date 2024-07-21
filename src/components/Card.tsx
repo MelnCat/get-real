@@ -61,7 +61,7 @@ const ringBackgroundForColor = (color: string | string[], colorOverride: string 
 	if (real instanceof Array && real.length > 1) {
 		return `conic-gradient(${real.flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;
 	}
-	return typeof real === "string" ? real.startsWith("url") ? "" : real : real[0];
+	return typeof real === "string" ? real.startsWith("url(") ? "" : real : real[0];
 };
 
 interface CardOptions {
@@ -97,7 +97,7 @@ export const Card = ({ color, symbol, flipped = false, size = sizeForSymbol(symb
 			<div
 				className={styles.card}
 				style={{
-					[cardBackground.includes("url") || cardBackground.includes("gradient") ? "background-image" : "background-color"]: cardBackground,
+					[cardBackground.startsWith("url(") || cardBackground.includes("gradient(") ? "backgroundImage" : "backgroundColor"]: cardBackground,
 					backgroundPosition: "center center",
 					backgroundSize: "cover",
 					"--color-override": colorOverride ?? "",

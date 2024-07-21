@@ -7,12 +7,7 @@
 	color: white;
 }
 .main > section {
-	display: flex;
-	flex-direction: column;
+	display: grid;
 	gap: 0.3em;
-	section {
-		display: flex;
-		gap: 0.3em;
-		flex-wrap: wrap;
-	}
+	width: fit-content;
 }

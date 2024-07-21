@@ -11,7 +11,9 @@ const DeckTypeIcon = ({ name, children }: { name: string; children?: React.React
 	);
 };
 const backgroundForColor = (color: string[]) => {
-	return `linear-gradient(#00000033,#00000033), linear-gradient(90deg, ${color.flatMap((x, i, a) => [`${x} ${(100 / a.length) * i}%`, `${x} ${(100 / a.length) * (i + 1)}%`]).join(", ")})`;
+	return `linear-gradient(#00000033,#00000033), linear-gradient(90deg, ${color
+		.flatMap((x, i, a) => [`${x} ${(100 / a.length) * i}%`, `${x} ${(100 / a.length) * (i + 1)}%`])
+		.join(", ")})`;
 };
 
 export const deckTypeIcons: Record<keyof typeof deckTypes, { background: string; element: JSX.Element }> = {
@@ -39,7 +41,7 @@ export const deckTypeIcons: Record<keyof typeof deckTypes, { background: string;
 				</div>
 			</DeckTypeIcon>
 		),
-		background: backgroundForColor(deckTypes.normal.colors),
+		background: backgroundForColor(deckTypes.normalWithSwap.colors),
 	},
 	cursed: {
 		element: (
@@ -53,5 +55,57 @@ export const deckTypeIcons: Record<keyof typeof deckTypes, { background: string;
 			</DeckTypeIcon>
 		),
 		background: backgroundForColor(deckTypes.cursed.colors),
+	},
+	original: {
+		element: (
+			<DeckTypeIcon name="Original">
+				<div className={styles.cardDisplay}>
+					<Card color="red" symbol="0" height="3.5em" />
+					<Card color={deckTypes.original.colors} symbol=" " height="3.5em" />
+					<Card color="blue" symbol="7" height="3.5em" />
+					<Card color={deckTypes.original.colors} symbol="+4" height="3.5em" />
+				</div>
+			</DeckTypeIcon>
+		),
+		background: backgroundForColor(deckTypes.original.colors),
+	},
+	originalWithSwap: {
+		element: (
+			<DeckTypeIcon name="Original + Swap">
+				<div className={styles.cardDisplay}>
+					<Card color="red" symbol="0" height="3.5em" />
+					<Card color={deckTypes.original.colors} symbol="swap" height="3.5em" />
+					<Card color="blue" symbol="7" height="3.5em" />
+					<Card color={deckTypes.original.colors} symbol="+4" height="3.5em" />
+				</div>
+			</DeckTypeIcon>
+		),
+		background: backgroundForColor(deckTypes.originalWithSwap.colors),
+	},
+	speedrun: {
+		element: (
+			<DeckTypeIcon name="Speedrun">
+				<div className={styles.cardDisplay}>
+					<Card color="#ccc" symbol="4" height="3.5em" />
+					<Card color={deckTypes.speedrun.colors} symbol="5" height="3.5em" />
+					<Card color="#555" symbol="1" height="3.5em" />
+					<Card color={deckTypes.speedrun.colors} symbol="+1" height="3.5em" />
+				</div>
+			</DeckTypeIcon>
+		),
+		background: backgroundForColor(deckTypes.speedrun.colors),
+	},
+	neverending: {
+		element: (
+			<DeckTypeIcon name="Neverending">
+				<div className={styles.cardDisplay}>
+					<Card color={deckTypes.neverending.colors} symbol="+64" height="3.5em" />
+					<Card color={deckTypes.neverending.colors} symbol="2ˣ" height="3.5em" />
+					<Card color="rebeccapurple" symbol="7" height="3.5em" />
+					<Card color="springgreen" symbol="÷3" height="3.5em" />
+				</div>
+			</DeckTypeIcon>
+		),
+		background: backgroundForColor(deckTypes.neverending.colors),
 	},
 };
