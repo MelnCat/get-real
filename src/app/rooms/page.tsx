@@ -8,6 +8,7 @@ import styles from "./rooms.module.scss";
 import { GameRules, deckTypes, defaultRules } from "../../../common/cards/card";
 import { RoomListData } from "../../../server/room";
 import Image from "next/image";
+import { deckTypeIcons } from "./deckTypeIcons";
 
 export default function RoomsPage() {
 	const room = useRoom();
@@ -86,8 +87,16 @@ export default function RoomsPage() {
 								Deck:
 								<div className={styles.deckButtons}>
 									{Object.keys(deckTypes).map(x => (
-										<button aria-label={x} key={x}>
-											<Image width={128} height={128} src={`/deck/${x}.png`} alt={x} />
+										<button
+											aria-label={x}
+											key={x}
+											style={{ borderColor: option === x ? "#ffffff" : "#6f6f6f", filter: option === x ? "" : "brightness(0.8)",
+												backgroundImage: deckTypeIcons[x as keyof typeof deckTypeIcons]?.background
+											 }}
+											onClick={() => setOption(x)}
+											
+										>
+											{deckTypeIcons[x as keyof typeof deckTypeIcons]?.element}
 										</button>
 									))}
 								</div>
