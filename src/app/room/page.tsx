@@ -12,6 +12,7 @@ export default function RoomPage() {
 	const room = useRoom();
 	const router = useRouter();
 	const auth = useAuth();
+	const [submitted, setSubmitted] = useState(false);
 	const settings = useMemo<RoomCreateOptions | null>(() => {
 		if (room === null || room === undefined) return null;
 		return {
@@ -34,9 +35,11 @@ export default function RoomPage() {
 		else if (room !== undefined && (room.state === "play" || room.state === "starting" || room.state === "end")) router.replace("/game");
 	}, [auth, room, router]);
 	const onClickStart = () => {
+		setSubmitted(true);
 		socket.emit("room:start");
 	};
 	const onClickLeave = () => {
+		setSubmitted(true);
 		socket.emit("room:leave");
 	};
 
@@ -68,15 +71,15 @@ export default function RoomPage() {
 							<h2>Room</h2>
 						</header>
 						<section className={styles.roomOptions}>
-							<RoomSettings setSettings={updateSettings} settings={settings} disabled={room?.owner !== auth.name} />{" "}
+							<RoomSettings setSettings={updateSettings} settings={settings} disabled={submitted || room?.owner !== auth.name} />{" "}
 							{room?.owner === auth.name ? (
-								<button className={styles.actionButton} onClick={onClickStart}>
+								<button disabled={submitted} className={styles.actionButton} onClick={onClickStart}>
 									Start Game
 								</button>
 							) : (
 								""
 							)}
-							<button className={styles.actionButton} onClick={onClickLeave}>
+							<button disabled={submitted} className={styles.actionButton} onClick={onClickLeave}>
 								Leave Room
 							</button>
 						</section>

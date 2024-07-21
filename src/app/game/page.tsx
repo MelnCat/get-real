@@ -14,6 +14,7 @@ import fontColorContrast from "font-color-contrast";
 import React from "react";
 import { roboto } from "@/font";
 import { numberFormat } from "../util/format";
+import { requiredVotekickCount } from "../util/util";
 const InnerDeckCard = ({ index, length, ...other }: { index: number; length: number }) => {
 	const ref = useRef(null);
 	const modulus = length < 200 ? 1 : 2;
@@ -167,6 +168,9 @@ export default function GamePage() {
 	const onClickLeave = () => {
 		if (room.state === "end" || confirm("Are you sure you want to leave?")) socket.emit("room:leave");
 	};
+	const onClickVotekick = () => {
+		if (!game.votekicked) socket.emit("game:votekick");
+	}
 
 	return (
 		<main className={styles.main} {...(game.yourTurn ? { "data-turn": true } : null)}>
@@ -290,7 +294,12 @@ export default function GamePage() {
 					{game.currentCard.color instanceof Array
 						? game.currentCard.color.map((x, i) => (
 								<div key={x}>
-									<button style={{ background: x, color: fontColorContrast(x), backgroundPosition: "center center", backgroundSize: "cover" }} className={x} aria-label={x} onClick={() => onClickChooseColor(i)}></button>
+									<button
+										style={{ background: x, color: fontColorContrast(x), backgroundPosition: "center center", backgroundSize: "cover" }}
+										className={x}
+										aria-label={x}
+										onClick={() => onClickChooseColor(i)}
+									></button>
 								</div>
 						  ))
 						: "?"}
@@ -341,9 +350,14 @@ export default function GamePage() {
 					</button>
 				</div>
 			) : (
-				<button className={styles.gameLeaveButton} onClick={onClickLeave}>
-					Quit Game
-				</button>
+				<div className={styles.topRight}>
+					<button className={styles.gameLeaveButton} onClick={onClickLeave}>
+						Quit Game
+					</button>
+					<button className={styles.gameLeaveButton} onClick={onClickVotekick} disabled={game.votekicked || game.yourTurn}>
+						Votekick{game.votekickCount > 0 ? ` (${game.votekickCount}/${requiredVotekickCount(game.playerList.length)})` : ""}
+					</button>
+				</div>
 			)}
 		</main>
 	);

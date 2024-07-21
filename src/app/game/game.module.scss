@@ -121,7 +121,7 @@
 	grid-column-start: 2;
 	user-select: none;
 	font-size: 6em;
-    transform: translateZ(300px) rotateX(-50deg) translateX(-50%) translateX(0.5em);
+	transform: translateZ(300px) rotateX(-50deg) translateX(-50%) translateX(0.5em);
 	text-shadow: 2px 2px 2px #00000055;
 	-webkit-text-stroke: black 12px;
 	font-weight: bold;
@@ -421,6 +421,15 @@
 		transform: rotateX(360deg);
 	}
 }
+.topRight {
+	position: fixed;
+	top: 1em;
+	right: 1em;
+    transform: translateZ(0);
+	display: flex;
+	flex-direction: column;
+	gap: 0.25em;
+}
 
 .gameLeaveButton {
 	background-color: white;
@@ -428,9 +437,6 @@
 	font-size: 1em;
 	font-weight: bold;
 	border-radius: 6px;
-	position: fixed;
-	top: 1em;
-	right: 1em;
 	transition: background-color 0.2s;
 	z-index: 2;
 	&:hover {
