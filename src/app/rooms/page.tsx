@@ -1,14 +1,13 @@
 "use client";
+import { RoomSettings } from "@/components/RoomSettings";
 import { socket } from "@/socket";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { defaultRules } from "../../../common/cards/card";
+import { RoomCreateOptions } from "../../../server/room";
 import { useAuth, useRoom, useRoomList } from "../util/context";
 import { RoomListItem } from "./RoomListItem";
 import styles from "./rooms.module.scss";
-import { GameRules, deckTypes, defaultRules } from "../../../common/cards/card";
-import { RoomListData } from "../../../server/room";
-import Image from "next/image";
-import { deckTypeIcons } from "./deckTypeIcons";
 
 export default function RoomsPage() {
 	const room = useRoom();
@@ -16,12 +15,15 @@ export default function RoomsPage() {
 	const auth = useAuth();
 	const roomList = useRoomList();
 	const [submitted, setSubmitted] = useState(false);
-	const [name, setName] = useState("");
-	const [option, setOption] = useState("normal");
-	const [rules, setRules] = useState(() => structuredClone(defaultRules));
-	const [lateJoins, setLateJoins] = useState(false);
+	const [settings, setSettings] = useState<RoomCreateOptions>({
+		name: "",
+		deckType: "normal",
+		lateJoins: false,
+		max: 10,
+		rules: defaultRules,
+		unlisted: false
+	});
 	const [error, setError] = useState<string | null>(null);
-	const [max, setMax] = useState(10);
 	useEffect(() => {
 		if (auth.name === null) router.replace("/setup");
 		else if (room !== null && room !== undefined) router.replace("/room");
@@ -36,24 +38,13 @@ export default function RoomsPage() {
 	const createRoom = () => {
 		setSubmitted(true);
 		setError(null);
-		socket.emit(
-			"room:create",
-			{
-				name,
-				unlisted: false,
-				deckType: option,
-				rules: rules,
-				lateJoins,
-				max,
-			},
-			success => {
-				if (success) router.push("/room");
-				else {
-					setSubmitted(false);
-					setError(`This name is already taken.`);
-				}
+		socket.emit("room:create", settings, success => {
+			if (success) router.push("/room");
+			else {
+				setSubmitted(false);
+				setError(`This name is already taken.`);
 			}
-		);
+		});
 	};
 	return (
 		<main className={styles.main}>
@@ -90,66 +81,18 @@ export default function RoomsPage() {
 								<input
 									className={styles.createInput}
 									placeholder="Name"
-									value={name}
+									value={settings.name}
 									onChange={e => {
-										setName(e.target.value);
+										setSettings(x => ({ ...x, name: e.target.value }));
 										setError(null);
 									}}
 								/>
 							</div>
-							<div className={styles.rules}>
-								<h3>Deck</h3>
-								<div className={styles.deckButtons}>
-									{Object.keys(deckTypes).map(x => (
-										<button
-											aria-label={x}
-											key={x}
-											style={{
-												borderColor: option === x ? "#ffffff" : "#6f6f6f",
-												filter: option === x ? "" : "brightness(0.8)",
-												backgroundImage: deckTypeIcons[x as keyof typeof deckTypeIcons]?.background,
-											}}
-											onClick={() => setOption(x)}
-										>
-											{deckTypeIcons[x as keyof typeof deckTypeIcons]?.element}
-										</button>
-									))}
-								</div>
-							</div>
-							<div className={styles.rules}>
-								<h3>Rules</h3>
-								<div className={styles.rule}>
-									<p>Pickup Until Playable</p>
-									<input
-										checked={rules.pickupUntilPlayable}
-										type="checkbox"
-										onChange={() => setRules(x => ({ ...x, pickupUntilPlayable: !x.pickupUntilPlayable }))}
-									/>
-								</div>
-								<div className={styles.rule}>
-									<p>Starting Card Count</p>
-									<input value={rules.startingCards} type="number" onChange={e => setRules(x => ({ ...x, startingCards: +e.target.value }))} />
-								</div>
-								<div className={styles.rule}>
-									<p>Unannounced 1 Card Penalty</p>
-									<input value={rules.unrealPenalty} type="number" onChange={e => setRules(x => ({ ...x, unrealPenalty: +e.target.value }))} />
-								</div>
-							</div>
-							<div className={styles.rules}>
-								<h3>Room Settings</h3>
-								<div className={styles.rule}>
-									Allow joining during gameplay? <input type="checkbox" value={lateJoins ? "on" : ""} onChange={x => setLateJoins(x => !x)} />
-								</div>
-								<div className={styles.rule}>
-									Max Players: <input type="number" value={max} onChange={x => setMax(+x.target.value)} />
-								</div>
-							</div>
-							<button disabled={submitted || name.trim() === ""} className={styles.createButton} onClick={() => name.trim() && createRoom()}>
+							<RoomSettings settings={settings} setSettings={setSettings} />
+							<button disabled={submitted || settings.name.trim() === ""} className={styles.createButton} onClick={() => settings.name.trim() && createRoom()}>
 								Create
 							</button>
-							<p className={styles.error}>
-								{error}
-							</p>
+							<p className={styles.error}>{error}</p>
 						</section>
 					</section>
 				</article>

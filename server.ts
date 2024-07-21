@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
-import { registerRoomEvents } from "./server/room";
+import { registerRoomEvents, roomManager } from "./server/room";
 import { TypedServer, TypedSocket } from "./server/types";
 import { registerAuthEvents } from "./server/auth";
 import { registerGameEvents } from "./server/game";
@@ -31,3 +31,7 @@ app.prepare().then(() => {
 			console.log(`> Ready on http://${hostname}:${port}`);
 		});
 });
+
+setInterval(() => {
+	roomManager.purgeInactiveRooms();
+}, 60 * 1000 * 60)

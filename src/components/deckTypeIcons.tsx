@@ -1,6 +1,6 @@
 import { Card } from "@/components/Card";
-import { deckTypes } from "../../../common/cards/card";
-import styles from "./rooms.module.scss";
+import { deckTypes } from "../../common/cards/card";
+import styles from "../app/rooms/rooms.module.scss";
 
 const DeckTypeIcon = ({ name, children }: { name: string; children?: React.ReactNode }) => {
 	return (
@@ -12,7 +12,7 @@ const DeckTypeIcon = ({ name, children }: { name: string; children?: React.React
 };
 const backgroundForColor = (color: string[]) => {
 	return `linear-gradient(#00000033,#00000033), linear-gradient(90deg, ${color
-		.flatMap((x, i, a) => [`${x} ${(100 / a.length) * i}%`, `${x} ${(100 / a.length) * (i + 1)}%`])
+		.filter(x => !x.startsWith("url(")).flatMap((x, i, a) => [`${x} ${(100 / a.length) * i}%`, `${x} ${(100 / a.length) * (i + 1)}%`])
 		.join(", ")})`;
 };
 

@@ -4,10 +4,11 @@ import { players } from "./auth";
 import { gameManager, type Game } from "./game";
 import type { EventCallback, TypedServer, TypedSocket } from "./types";
 
-interface RoomCreateOptions {
+export interface RoomCreateOptions {
 	name: string;
 	unlisted: boolean;
 	deckType: string;
+	customDeckType?: GameConstants;
 	rules: GameRules;
 	lateJoins: boolean;
 	max: number;
@@ -22,6 +23,7 @@ export interface ClientRoomData {
 }
 export interface RoomC2SEvents {
 	"room:create": (options: RoomCreateOptions, cb: EventCallback<boolean>) => void;
+	"room:config": (options: RoomCreateOptions) => void;
 	"room:join": (roomName: string) => void;
 	"room:start": () => void;
 	"room:leave": () => void;
@@ -57,6 +59,7 @@ export interface BaseRoom {
 	lateJoins: boolean;
 	deckType: GameConstants;
 	rules: GameRules;
+	createdAt: number;
 }
 export interface LobbyRoom extends BaseRoom {
 	state: "lobby";
@@ -153,8 +156,9 @@ export const roomManager = {
 			name: options.name,
 			players: [owner],
 			unlisted: options.unlisted,
-			deckType: deckTypes[options.deckType as keyof typeof deckTypes] ?? defaultConstants,
-			rules: options.rules
+			deckType: (options.deckType === "custom" ? options.customDeckType : deckTypes[options.deckType as keyof typeof deckTypes]) ?? defaultConstants,
+			rules: options.rules,
+			createdAt: Date.now()
 		};
 		this._roomPlayerCache[owner] = room;
 		this.rooms[room.name] = room;
@@ -169,6 +173,11 @@ export const roomManager = {
 			this.resendPlayerData(player, undefined);
 		}
 	},
+	purgeInactiveRooms() {
+		for (const room of Object.values(this.rooms)) {
+			if (room.createdAt + 1000 * 60 * 60 * 24 < Date.now()) this.deleteRoom(room.name);
+		}
+	}
 };
 
 export const registerRoomEvents = (io: TypedServer, socket: TypedSocket) => {
@@ -180,6 +189,17 @@ export const registerRoomEvents = (io: TypedServer, socket: TypedSocket) => {
 	});
 	socket.on("room:join", room => {
 		roomManager.joinRoom(socket.data.playerId, room);
+	});
+	socket.on("room:config", options => {
+		const lobby = roomManager.byPlayer(socket.data.playerId);
+		if (lobby === undefined || lobby.state !== "lobby") return;
+		if (lobby.owner !== socket.data.playerId) return;
+		const room = lobby as unknown as StartingRoom;
+		room.rules = options.rules;
+		room.max = options.max;
+		room.lateJoins = options.lateJoins;
+		room.unlisted = options.unlisted;
+		roomManager.resendData(room.name);
 	});
 	socket.on("room:start", () => {
 		const lobby = roomManager.byPlayer(socket.data.playerId);
