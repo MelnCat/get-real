@@ -50,16 +50,18 @@ const aliases = {
 } as const;
 
 const cardBackgroundForColor = (color: string | string[], colorOverride: string | undefined) => {
+	if (colorOverride?.startsWith("url(")) return colorOverride;
 	const real = typeof color === "string" && color in aliases ? aliases[color as keyof typeof aliases] : color;
 	if (real instanceof Array && real.length > 1) {
-		return `linear-gradient(${real.join(", ")})`;
+		return `linear-gradient(${real.filter(x => !x.startsWith("url(")).join(", ")})`;
 	}
 	return typeof real === "string" ? real : real[0];
 };
 const ringBackgroundForColor = (color: string | string[], colorOverride: string | undefined) => {
+	if (colorOverride?.startsWith("url(")) return "transparent";
 	const real = typeof color === "string" && color in aliases ? aliases[color as keyof typeof aliases] : color;
 	if (real instanceof Array && real.length > 1) {
-		return `conic-gradient(${real.flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;
+		return `conic-gradient(${real.filter(x => !x.startsWith("url(")).flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;
 	}
 	return typeof real === "string" ? real.startsWith("url(") ? "" : real : real[0];
 };
@@ -81,7 +83,7 @@ const CardRing = ({ color, colorOverride }: { color: string | string[]; colorOve
 			className={styles.ring}
 			style={{
 				background: ringBackgroundForColor(color, colorOverride),
-				"--color-override": colorOverride ? mix("transparent", colorOverride, 50).hexa : "",
+				"--color-override": colorOverride ? colorOverride.startsWith("url(") ? colorOverride : mix("transparent", colorOverride, 50).hexa : "",
 			}}
 		></div>
 	);

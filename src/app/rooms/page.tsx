@@ -20,6 +20,7 @@ export default function RoomsPage() {
 	const [option, setOption] = useState("normal");
 	const [rules, setRules] = useState(() => structuredClone(defaultRules));
 	const [lateJoins, setLateJoins] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const [max, setMax] = useState(10);
 	useEffect(() => {
 		if (auth.name === null) router.replace("/setup");
@@ -34,6 +35,7 @@ export default function RoomsPage() {
 	);
 	const createRoom = () => {
 		setSubmitted(true);
+		setError(null);
 		socket.emit(
 			"room:create",
 			{
@@ -44,8 +46,12 @@ export default function RoomsPage() {
 				lateJoins,
 				max,
 			},
-			() => {
-				router.push("/room");
+			success => {
+				if (success) router.push("/room");
+				else {
+					setSubmitted(false);
+					setError(`This name is already taken.`);
+				}
 			}
 		);
 	};
@@ -81,20 +87,29 @@ export default function RoomsPage() {
 						<section className={styles.createOptions}>
 							<div className={styles.createRoomName}>
 								<p>Name: </p>
-								<input className={styles.createInput} placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
+								<input
+									className={styles.createInput}
+									placeholder="Name"
+									value={name}
+									onChange={e => {
+										setName(e.target.value);
+										setError(null);
+									}}
+								/>
 							</div>
 							<div className={styles.rules}>
-							<h3>Deck</h3>
+								<h3>Deck</h3>
 								<div className={styles.deckButtons}>
 									{Object.keys(deckTypes).map(x => (
 										<button
 											aria-label={x}
 											key={x}
-											style={{ borderColor: option === x ? "#ffffff" : "#6f6f6f", filter: option === x ? "" : "brightness(0.8)",
-												backgroundImage: deckTypeIcons[x as keyof typeof deckTypeIcons]?.background
-											 }}
+											style={{
+												borderColor: option === x ? "#ffffff" : "#6f6f6f",
+												filter: option === x ? "" : "brightness(0.8)",
+												backgroundImage: deckTypeIcons[x as keyof typeof deckTypeIcons]?.background,
+											}}
 											onClick={() => setOption(x)}
-											
 										>
 											{deckTypeIcons[x as keyof typeof deckTypeIcons]?.element}
 										</button>
@@ -132,6 +147,9 @@ export default function RoomsPage() {
 							<button disabled={submitted || name.trim() === ""} className={styles.createButton} onClick={() => name.trim() && createRoom()}>
 								Create
 							</button>
+							<p className={styles.error}>
+								{error}
+							</p>
 						</section>
 					</section>
 				</article>

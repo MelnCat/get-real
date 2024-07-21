@@ -117,14 +117,11 @@
 }
 .pickupIcon {
 	margin: auto;
-	position: absolute;
 	grid-row-start: 2;
 	grid-column-start: 2;
 	user-select: none;
 	font-size: 6em;
     transform: translateZ(300px) rotateX(-50deg) translateX(-50%) translateX(0.5em);
-	left: 0;
-	top: 0;
 	text-shadow: 2px 2px 2px #00000055;
 	-webkit-text-stroke: black 12px;
 	font-weight: bold;
@@ -281,21 +278,21 @@
 	scrollbar-width: thin;
 	.handCard {
 		flex-shrink: 1;
-		transition: flex-shrink 0.2s, transform 0.2s, filter 0.2s;
+		transition: flex-shrink 0.2s, translate 0.15s, filter 0.2s;
 		min-width: 2em;
 		margin-top: auto;
 		&:last-child {
 			flex-shrink: 0;
 		}
 		&:hover {
-			transform: translateY(-3.2em);
+			translate: 0 -3.2em;
 			//flex-shrink: 0;
 		}
 		&:has(+ :hover) {
 			//flex-shrink: 0;
 		}
 		&[data-selected] {
-			transform: translateY(-3.2em);
+			translate: 0 -3.2em;
 			filter: drop-shadow(0 0 6px white) contrast(0.5) brightness(1.5);
 		}
 		&[data-disabled] {

@@ -306,7 +306,9 @@ export const neverendingConstants = {
 		"white",
 		"whitesmoke",
 		"yellow",
-		"yellowgreen"
+		"yellowgreen",
+		"transparent",
+		"url(/mewhenthe.gif)"
 	],
 	wilds: [],
 	includeMulticolorWild: true,

@@ -9,7 +9,7 @@ import { socket } from "@/socket";
 import { Flipper, Flipped } from "react-flip-toolkit";
 import { canMatch, canPlay, getPickupValue, PlayedCard } from "../../../common/cards/card";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import fontColorContrast from "font-color-contrast";
 import React from "react";
 import { roboto } from "@/font";
@@ -78,7 +78,7 @@ export default function GamePage() {
 	const [pickingUp, setPickingUp] = useState(false);
 	const handRef = useRef<HTMLDivElement | null>(null);
 	const justClicked = useRef<Record<string, number>>({});
-	const formattedPickup = useMemo(() => game?.pickup ? numberFormat.format(Math.abs(game.pickup)): "", [game?.pickup]);
+	const formattedPickup = useMemo(() => (game?.pickup ? numberFormat.format(Math.abs(game.pickup)) : ""), [game?.pickup]);
 
 	useEffect(() => {
 		if (auth.name === null) router.replace("/setup");
@@ -194,15 +194,18 @@ export default function GamePage() {
 						))}
 					</TransitionGroup>
 				</button>
+				{game.pickup !== 0 && (
+					<div
+						className={`${styles.pickupIcon} ${roboto.className}`}
+						style={{
+							fontSize: formattedPickup.length > 30 ? "3em" : formattedPickup.length > 20 ? "4em" : formattedPickup.length > 10 ? "5em" : "",
+						}}
+					>
+						{game.pickup > 0 ? "+" : "−"}
+						{formattedPickup}
+					</div>
+				)}
 				<div className={styles.discard} {...(game.lastPlayer === auth.name || (game.yourTurn && game.configurationState !== null) ? { "data-last-turn": true } : null)}>
-					{game.pickup !== 0 && (
-						<div className={`${styles.pickupIcon} ${roboto.className}`} style={{
-							fontSize: formattedPickup.length > 30 ? "3em" : formattedPickup.length > 20 ? "4em" : formattedPickup.length > 10 ? "5em" : ""
-						}}>
-							{game.pickup > 0 ? "+" : "−"}
-							{formattedPickup}
-						</div>
-					)}
 					<TransitionGroup component={null} exit={false}>
 						{game.lastDiscards.concat(game.currentCard).map((x, i, a) => (
 							<DiscardCard card={x} index={i} key={x.id} />
@@ -231,45 +234,49 @@ export default function GamePage() {
 				<button className={styles.call} onClick={onClickCall}>
 					GET REAL!
 				</button>
-				<Flipper flipKey={game.hand.map(x => x.id).join("")}>
-					<div
-						className={styles.hand}
-						ref={handRef}
-						onWheel={e => {
-							e.preventDefault();
-							handRef.current?.scrollBy({ left: e.deltaY });
-						}}
-					>
+				<div
+					className={styles.hand}
+					ref={handRef}
+					onWheel={e => {
+						e.preventDefault();
+						handRef.current?.scrollBy({ left: e.deltaY });
+					}}
+				>
+					<AnimatePresence>
 						{game.hand.map((x, i, a) => (
-							<Flipped flipId={x.id} key={x.id}>
-								<button
-									className={styles.handCard}
-									{...(selected.includes(x.id) ? { "data-selected": true } : null)}
-									{...(game.yourTurn &&
-									!selected.includes(x.id) &&
-									(selected.length === 0
-										? !canPlay(game.currentCard, x) || (game.pickup && getPickupValue(x) === null)
-										: !canMatch(game.hand.find(y => y.id === selected.at(-1))!, x))
-										? { "data-disabled": true }
-										: null)}
-									onClick={() => onClickCard(x.id)}
-									onContextMenu={e => onRightClickCard(e, x.id)}
-									aria-label={`Card ${x.color} ${x.type}`}
-								>
-									<Card height="12em" {...x} symbol={x.type.toString()} />
-								</button>
-							</Flipped>
+							<motion.button
+								layout
+								key={x.id}
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								className={styles.handCard}
+								{...(selected.includes(x.id) ? { "data-selected": true } : null)}
+								{...(game.yourTurn &&
+								!selected.includes(x.id) &&
+								(selected.length === 0
+									? !canPlay(game.currentCard, x) || (game.pickup && getPickupValue(x) === null)
+									: !canMatch(game.hand.find(y => y.id === selected.at(-1))!, x))
+									? { "data-disabled": true }
+									: null)}
+								onClick={() => onClickCard(x.id)}
+								onContextMenu={e => onRightClickCard(e, x.id)}
+								aria-label={`Card ${x.color} ${x.type}`}
+							>
+								<Card height="12em" {...x} symbol={x.type.toString()} />
+							</motion.button>
 						))}
-					</div>
-				</Flipper>
+					</AnimatePresence>
+				</div>
 			</div>
 			{game.yourTurn && game.configurationState === "color" && (
 				<div
 					className={styles.colorConfig}
 					style={{
 						"--column-count":
-							[0, 1, 2, 3, 2, 3, 3, 4, 4][game.currentCard.color.length] ??
-							(game.currentCard.color.length % 5 === 0
+							[0, 1, 2, 3, 2, 3, 3, 4, 4][game.currentCard.color.length] ?? game.currentCard.color.length > 100
+								? 20
+								: game.currentCard.color.length % 5 === 0
 								? 5
 								: game.currentCard.color.length % 4 === 0
 								? 4
@@ -277,13 +284,13 @@ export default function GamePage() {
 								? 3
 								: game.currentCard.color.length % 2 === 0
 								? game.currentCard.color.length / 2
-								: 5),
+								: 5,
 					}}
 				>
 					{game.currentCard.color instanceof Array
 						? game.currentCard.color.map((x, i) => (
 								<div key={x}>
-									<button style={{ backgroundColor: x, color: fontColorContrast(x) }} className={x} aria-label={x} onClick={() => onClickChooseColor(i)}></button>
+									<button style={{ background: x, color: fontColorContrast(x), backgroundPosition: "center center", backgroundSize: "cover" }} className={x} aria-label={x} onClick={() => onClickChooseColor(i)}></button>
 								</div>
 						  ))
 						: "?"}
