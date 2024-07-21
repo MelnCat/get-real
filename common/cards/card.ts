@@ -309,7 +309,7 @@ export interface GameRules {
 	unrealPenalty: number;
 }
 export const defaultRules = {
-	pickupUntilPlayable: false,
+	pickupUntilPlayable: false as boolean,
 	startingCards: 10,
 	unrealPenalty: 2,
 } satisfies GameRules;

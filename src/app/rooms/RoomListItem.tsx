@@ -3,7 +3,7 @@ import { RoomListData } from "../../../server/room";
 import { socket } from "@/socket";
 import styles from "./rooms.module.scss";
 
-export const RoomListItem = ({ room, canJoin, setSubmitted }: { room: RoomListData | null; canJoin: boolean; setSubmitted(submitted: boolean): void }) => {
+export const RoomListItem = ({ room, canJoin, setSubmitted, submitted }: { room: RoomListData | null; canJoin: boolean; setSubmitted(submitted: boolean): void; submitted: boolean }) => {
 	return (
 		<article className={styles.room}>
 			<div className={styles.roomHeader}>
@@ -20,7 +20,7 @@ export const RoomListItem = ({ room, canJoin, setSubmitted }: { room: RoomListDa
 			</div>
 			<p className={styles.roomStatus}>{room !== null ? room.state === "lobby" ? "In Lobby" : "In Game" : <Skeleton />}</p>
 			<p>{room !== null ? `Owner: ${room.owner}` : <Skeleton />}</p>
-			{canJoin && room !== null && <button onClick={() => {
+			{canJoin && room !== null && <button disabled={submitted} onClick={() => {
 				socket.emit("room:join", room.name);
 				setSubmitted(true);
 			}}>Join</button>}

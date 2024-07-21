@@ -7,6 +7,7 @@ import { RoomListItem } from "./RoomListItem";
 import styles from "./rooms.module.scss";
 import { GameRules, deckTypes, defaultRules } from "../../../common/cards/card";
 import { RoomListData } from "../../../server/room";
+import Image from "next/image";
 
 export default function RoomsPage() {
 	const room = useRoom();
@@ -16,9 +17,7 @@ export default function RoomsPage() {
 	const [submitted, setSubmitted] = useState(false);
 	const [name, setName] = useState("");
 	const [option, setOption] = useState("normal");
-	const [rules, setRules] = useState<Record<keyof typeof defaultRules, string>>(
-		Object.fromEntries(Object.entries(defaultRules).map(x => [x[0] as any, JSON.stringify(x[1])] as const))
-	);
+	const [rules, setRules] = useState(() => structuredClone(defaultRules));
 	const [lateJoins, setLateJoins] = useState(false);
 	const [max, setMax] = useState(10);
 	useEffect(() => {
@@ -28,7 +27,7 @@ export default function RoomsPage() {
 	const skeletons = (
 		<section className={styles.roomGrid}>
 			{[...Array(5)].map((_, i) => (
-				<RoomListItem room={null} key={i} canJoin={false} setSubmitted={() => {}} />
+				<RoomListItem room={null} key={i} canJoin={false} submitted={false} setSubmitted={() => {}} />
 			))}
 		</section>
 	);
@@ -40,7 +39,7 @@ export default function RoomsPage() {
 				name,
 				unlisted: false,
 				deckType: option,
-				rules: Object.fromEntries(Object.entries(rules).map(x => [x[0], JSON.parse(x[1])])) as GameRules,
+				rules: rules,
 				lateJoins,
 				max,
 			},
@@ -69,7 +68,7 @@ export default function RoomsPage() {
 								{roomList
 									.filter(x => (x.lateJoins ? x.state !== "end" : x.state === "lobby"))
 									.map(x => (
-										<RoomListItem room={x} key={x.name} canJoin={true} setSubmitted={setSubmitted} />
+										<RoomListItem room={x} key={x.name} canJoin={true} submitted={submitted} setSubmitted={setSubmitted} />
 									))}
 							</section>
 						)}
@@ -83,23 +82,26 @@ export default function RoomsPage() {
 								<p>Name: </p>
 								<input className={styles.createInput} placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
 							</div>
-							<div>
-								Deck:{" "}
-								<select value={option} onChange={x => setOption(x.target.value)}>
+							<div className={styles.deckSelect}>
+								Deck:
+								<div className={styles.deckButtons}>
 									{Object.keys(deckTypes).map(x => (
-										<option key={x} value={x}>
-											{x}
-										</option>
+										<button aria-label={x} key={x}>
+											<Image width={128} height={128} src={`/deck/${x}.png`} alt={x} />
+										</button>
 									))}
-								</select>
+								</div>
 							</div>
-							<div>
-								{Object.entries(rules).map(([key, value]) => (
-									<div key={key}>
-										{key}:
-										<input value={value} onChange={x => setRules({ ...rules, [key]: x.target.value })} />
-									</div>
-								))}
+							<div className={styles.rules}>
+								<h3>Rules</h3>
+								<div className={styles.rule}>
+									<p>Pickup Until Playable</p>
+									<input
+										checked={rules.pickupUntilPlayable}
+										type="checkbox"
+										onChange={() => setRules(x => ({ ...x, pickupUntilPlayable: !x.pickupUntilPlayable }))}
+									/>
+								</div>
 							</div>
 							<div>
 								Late Joins: <input type="checkbox" value={lateJoins ? "on" : ""} onChange={x => setLateJoins(x => !x)} />

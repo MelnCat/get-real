@@ -58,10 +58,10 @@
 	margin: auto;
 }
 .room {
-    background-color: #b9c2d3;
-    padding: 1em;
+	background-color: #b9c2d3;
+	padding: 1em;
 	padding-left: 1.25em;
-    border-top: 0.5em solid #a9acc3;
+	border-top: 0.5em solid #a9acc3;
 	min-width: 12em;
 	display: flex;
 	flex-direction: column;
@@ -78,12 +78,10 @@
 		width: fit-content;
 		transition: background-color 0.1s;
 		&:hover {
-			
-		background-color: #0000003f;
+			background-color: #0000003f;
 		}
 		&:active {
-			
-		background-color: #00000055;
+			background-color: #00000055;
 		}
 	}
 }
@@ -110,9 +108,13 @@
 	header {
 		background-color: #505057;
 	}
+	input {
+		font-size: 1.1em;
+	}
 }
 .createOptions {
 	padding: 1em;
+	font-size: 1.2em;
 }
 .createRoomName {
 	display: flex;
@@ -120,4 +122,28 @@
 	input {
 		flex-grow: 1;
 	}
+}
+.deckSelect {
+	display: flex;
+	flex-direction: column;
+}
+.deckButtons {
+	display: flex;
+	flex-wrap: wrap;
+	img {
+		aspect-ratio: 1 / 1;
+		background-color: red;
+	}
+}
+.rules {
+	background-color: #b5adbb;
+	padding: 0.5em;
+	margin: 0.5em 0;
+}
+.rule {
+	display: flex;
+	flex-direction: row;
+	font-size: 0.9em;
+	gap: 1em;
+	cursor: help;
 }
