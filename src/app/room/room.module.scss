@@ -3,42 +3,37 @@
 	flex-direction: column;
 	gap: 0.3em;
 	padding: 0.5em;
-	button {
-		background-color: #00000033;
-		padding: 0.5em 0.6em;
-		border-radius: 5px;
-		font-weight: bold;
-		transition: background-color 0.2s;
-		&:hover {
-			background-color: #00000044;
-		}
-		&:active {
-			background-color: #00000066;
-		}
-	}
+	--s: 82px;
+	--c1: #a87f3e;
+	--c2: #b8a351;
+	--c3: #f0ae70;
+
+	--_g: var(--c3) 0 120deg, #0000 0;
+	background: conic-gradient(from -60deg at 50% calc(100% / 3), var(--_g)), conic-gradient(from 120deg at 50% calc(200% / 3), var(--_g)),
+		conic-gradient(from 60deg at calc(200% / 3), var(--c3) 60deg, var(--c2) 0 120deg, #0000 0), conic-gradient(from 180deg at calc(100% / 3), var(--c1) 60deg, var(--_g)),
+		linear-gradient(90deg, var(--c1) calc(100% / 6), var(--c2) 0 50%, var(--c1) 0 calc(500% / 6), var(--c2) 0);
+	background-size: calc(1.732 * var(--s)) var(--s);
 }
-.players {
+
+.box {
+	background-color: #ffffffee;
 	display: flex;
+	align-items: center;
 	flex-direction: column;
-	gap: 0.4em;
-	background-color: #00000022;
-	padding: 0.5em 0.6em;
-	border-radius: 5px;
-	ul {
-		padding-left: 1em;
+	width: calc(100% - 6em);
+	min-height: calc(100dvh - 6em);
+	margin: auto;
+	padding: 1em;
+	header {
+		background-color: #bb5c37;
+		color: #ffffff;
+		font-size: 2em;
+		padding: 0.1em 1em;
+		width: 100%;
+		text-align: center;
+		@media screen and (max-width: 500px) {
+			font-size: 2.5em;
+			padding: 0.2em 0.3em;
+		}
 	}
-	li span {
-		font-size: 0.9em;
-		color: #ffffffcc;
-		background-color: #413faa;
-		border-radius: 5px;
-		padding: 0.2em 0.5em;
-		font-weight: bold;
-		display: inline-block;
-		margin-left: 0.5em;
-	}
-}
-.buttonRow {
-	display: flex;
-	gap: 0.3em;
 }

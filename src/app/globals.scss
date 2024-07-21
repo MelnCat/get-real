@@ -41,6 +41,9 @@ button {
 	border: unset;
 	font-size: unset;
 	cursor: pointer;
+	&[disabled] {
+		cursor: not-allowed;
+	}
 }
 
 @media screen and (max-width: 500px) {

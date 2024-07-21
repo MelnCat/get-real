@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import "react-loading-skeleton/dist/skeleton.css";
-import "./globals.css";
+import "./globals.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 

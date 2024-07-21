@@ -109,7 +109,14 @@
 		background-color: #505057;
 	}
 	input {
-		font-size: 1.1em;
+		font-size: 1em;
+		font-weight: 440;
+		&[type="checkbox"] {
+			font-size: 1.4em;
+			width: 0.7em;
+			height: 0.7em;
+		}
+		width: 4em;
 	}
 }
 .createOptions {
@@ -118,9 +125,13 @@
 }
 .createRoomName {
 	display: flex;
+	align-items: center;
 	width: 100%;
+	gap: 0.4em;
 	input {
 		flex-grow: 1;
+		font-size: 0.9em;
+		padding: 0.1em 0.2em;
 	}
 }
 .deckSelect {
@@ -139,11 +150,33 @@
 	background-color: #b5adbb;
 	padding: 0.5em;
 	margin: 0.5em 0;
+	gap: 0.2em;
+	display: flex;
+	flex-direction: column;
+	border-radius: 5px;
 }
 .rule {
 	display: flex;
 	flex-direction: row;
 	font-size: 0.9em;
-	gap: 1em;
-	cursor: help;
+	gap: 0.5em;
+	height: 1.2em;
+	align-items: center;
+	p {
+		cursor: help;
+	}
+}
+
+.createButton {
+	background-color: #00000033;
+	padding: 0.5em 0.6em;
+	border-radius: 5px;
+	font-weight: bold;
+	transition: background-color 0.2s;
+	&:hover {
+		background-color: #00000044;
+	}
+	&:active {
+		background-color: #00000066;
+	}
 }

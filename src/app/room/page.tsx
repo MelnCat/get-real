@@ -24,15 +24,32 @@ export default function RoomPage() {
 
 	return (
 		<main className={styles.main}>
-			<h1>{room ? `Room: ${room.name}` : <Skeleton />}</h1>
-			<section className={styles.players}>
-				<h1>Players ({room?.players.length}/{room?.max})</h1>
-				<ul>{room ? room.players.map(x => <li key={x}>{x}{room.owner === x ? <span>OWNER</span> : null}</li>) : <Skeleton count={4} />}</ul>
-			</section>
-			<section className={styles.buttonRow}>
-				{room?.owner === auth.name ? <button onClick={onClickStart}>Start</button> : ""}
-				<button onClick={onClickLeave}>Leave</button>
-			</section>
+			<article className={styles.box}>
+				<header>
+					<h1>{room ? `Room: ${room.name}` : <Skeleton />}</h1>
+				</header>
+				<section className={styles.players}>
+					<h1>
+						Players ({room?.players.length}/{room?.max})
+					</h1>
+					<ul>
+						{room ? (
+							room.players.map(x => (
+								<li key={x}>
+									{x}
+									{room.owner === x ? <span>OWNER</span> : null}
+								</li>
+							))
+						) : (
+							<Skeleton count={4} />
+						)}
+					</ul>
+				</section>
+				<section className={styles.buttonRow}>
+					{room?.owner === auth.name ? <button onClick={onClickStart}>Start</button> : ""}
+					<button onClick={onClickLeave}>Leave</button>
+				</section>
+			</article>
 		</main>
 	);
 }

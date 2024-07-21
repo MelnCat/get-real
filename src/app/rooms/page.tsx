@@ -102,14 +102,25 @@ export default function RoomsPage() {
 										onChange={() => setRules(x => ({ ...x, pickupUntilPlayable: !x.pickupUntilPlayable }))}
 									/>
 								</div>
+								<div className={styles.rule}>
+									<p>Starting Card Count</p>
+									<input value={rules.startingCards} type="number" onChange={e => setRules(x => ({ ...x, startingCards: +e.target.value }))} />
+								</div>
+								<div className={styles.rule}>
+									<p>Unannounced 1 Card Penalty</p>
+									<input value={rules.unrealPenalty} type="number" onChange={e => setRules(x => ({ ...x, unrealPenalty: +e.target.value }))} />
+								</div>
 							</div>
-							<div>
-								Late Joins: <input type="checkbox" value={lateJoins ? "on" : ""} onChange={x => setLateJoins(x => !x)} />
+							<div className={styles.rules}>
+								<h3>Room Settings</h3>
+								<div className={styles.rule}>
+									Allow joining during gameplay? <input type="checkbox" value={lateJoins ? "on" : ""} onChange={x => setLateJoins(x => !x)} />
+								</div>
+								<div className={styles.rule}>
+									Max Players: <input type="number" value={max} onChange={x => setMax(+x.target.value)} />
+								</div>
 							</div>
-							<div>
-								Max Players: <input type="number" value={max} onChange={x => setMax(+x.target.value)} />
-							</div>
-							<button className={styles.createButton} onClick={() => name.trim() && createRoom()}>
+							<button disabled={submitted || name.trim() === ""} className={styles.createButton} onClick={() => name.trim() && createRoom()}>
 								Create
 							</button>
 						</section>
