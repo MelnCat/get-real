@@ -92,6 +92,7 @@
 		left: 0;
 		transform: translate3d(calc(sin(tan(var(--deck-index) * 42)) * 0.3em), calc(sin(tan(var(--deck-index) * 4)) * 0.2em), calc(var(--deck-index) * 0.05em));
 		transition: transform 1s;
+		display: var(--deck-card-display);
 		article > div {
 			border-color: color-mix(in lch, white, black calc(sin(tan(var(--deck-index) * 4)) * 20%));
 		}
@@ -109,10 +110,12 @@
 			}
 		}
 	}
-		.deckExit {
-			transform: var(--exit-transform);
-		}
-	
+	.deckExit {
+		transition-delay: var(--exit-delay);
+		transform: var(--exit-transform);
+		display: initial;
+		pointer-events: none;
+	}
 }
 .pickupIcon {
 	margin: auto;
@@ -143,19 +146,17 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		transform: translate3d(calc(sin(tan(var(--random-seed) * 42)) * 0.5em), calc(sin(tan(var(--random-seed) * 4)) * 0.5em), calc(var(--card-index) * 0.1em))
-			rotateZ(calc(sin(var(--random-seed)) * 90deg));
+		transform: rotateZ(calc(sin(var(--random-seed)) * 90deg))
+			translate3d(calc(sin(tan(var(--random-seed) * 42)) * 0.5em), calc(sin(tan(var(--random-seed) * 4)) * 0.5em), calc(var(--card-index) * 0.1em));
 		filter: drop-shadow(2px 2px 4px #00000044);
 		transition: transform 0.5s;
 	}
-	&[data-last-turn] {
-		.discardEnter {
-			transform: var(--enter-transform);
-		}
-		.discardEnterActive {
-			transform: translate3d(calc(sin(tan(var(--random-seed) * 42)) * 0.5em), calc(sin(tan(var(--random-seed) * 4)) * 0.5em), calc(var(--card-index) * 0.1em))
-				rotateZ(calc(sin(var(--random-seed)) * 90deg));
-		}
+	.discardEnter {
+		transform: var(--enter-transform);
+	}
+	.discardEnterActive {
+		transform: rotateZ(calc(sin(var(--random-seed)) * 90deg))
+			translate3d(calc(sin(tan(var(--random-seed) * 42)) * 0.5em), calc(sin(tan(var(--random-seed) * 4)) * 0.5em), calc(var(--card-index) * 0.1em));
 	}
 }
 .bottomRow {
@@ -166,6 +167,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 1em;
+	pointer-events: none;
 }
 .actionRow {
 	display: flex;
@@ -173,9 +175,12 @@
 	margin: 0 auto;
 	margin-bottom: 3em;
 	z-index: 2;
+	pointer-events: none;
 	.playCards,
 	.pass,
 	.pickup {
+		pointer-events: auto;
+
 		color: black;
 		background-color: white;
 		font-size: 2em;
@@ -191,6 +196,7 @@
 	}
 }
 .call {
+	pointer-events: auto;
 	position: fixed;
 	bottom: 15rem;
 	right: 1rem;
@@ -209,6 +215,7 @@
 	}
 }
 .colorConfig {
+	z-index: 4;
 	position: fixed;
 	bottom: 30%;
 	left: 50%;
@@ -217,7 +224,24 @@
 	border: white 2px solid;
 	width: calc(4em * var(--column-count));
 	box-sizing: content-box;
+	max-width: calc(100% - 8em);
 	flex-wrap: wrap;
+	--cursed-font-size: 0.9em;
+	@media screen and (max-width: 1000px) {
+		--cursed-font-size: 0.8em;
+	}
+	@media screen and (max-height: 832px) {
+		--cursed-font-size: 0.8em;
+	}
+	@media screen and (max-width: 800px) {
+		--cursed-font-size: 0.7em;
+	}
+	@media screen and (max-width: 672px) {
+		--cursed-font-size: 0.6em;
+	}
+	@media screen and (max-width: 400px) {
+		--cursed-font-size: 0.5em;
+	}
 	div {
 		border: white 2px solid;
 		flex-grow: 1;
@@ -266,7 +290,7 @@
 }
 .hand {
 	display: flex;
-	width: fit-content;
+	width: 100%;
 	max-width: 100%;
 	gap: 0.5em;
 	margin: 0 auto;
@@ -275,12 +299,17 @@
 	overflow-x: auto;
 	scrollbar-color: black white;
 	scrollbar-width: thin;
+	pointer-events: auto;
 	.handCard {
 		flex-shrink: 1;
 		transition: flex-shrink 0.2s, translate 0.15s, filter 0.2s;
 		min-width: 2em;
 		margin-top: auto;
+		&:first-child {
+			margin-left: auto;
+		}
 		&:last-child {
+			margin-right: auto;
 			flex-shrink: 0;
 		}
 		&:hover {
@@ -373,7 +402,7 @@
 			&:nth-child(n + 3) {
 				background-color: #7c7c7c;
 			}
-			&:last-child {
+			&[data-dnf] {
 				background-color: #5a1111;
 				--highlight-color: unset;
 			}

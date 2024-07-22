@@ -55,6 +55,7 @@ export interface ClientGameData {
 	votekickCount: number;
 	votekicked: boolean;
 	lastDrawer: string | null;
+	lastDiscarder: string | null;
 }
 
 export interface EnhancedClientGameData extends ClientGameData {
@@ -93,6 +94,7 @@ export interface Game {
 	rules: GameRules;
 	votekickers: string[];
 	lastDrawer: string | null;
+	lastDiscarder: string | null;
 }
 
 export const gameManager = {
@@ -126,6 +128,7 @@ export const gameManager = {
 			rules: room.rules,
 			votekickers: [],
 			lastDrawer: null,
+			lastDiscarder: null,
 			takeDeck(count: number) {
 				const took = this.deck.splice(0, count);
 				if (took.length < count) {
@@ -171,6 +174,7 @@ export const gameManager = {
 			votekickCount: game.votekickers.length,
 			votekicked: game.votekickers.includes(playerId),
 			lastDrawer: players[game.lastDrawer ?? ""]?.name,
+			lastDiscarder: players[game.lastDiscarder ?? ""]?.name
 		};
 	},
 	byPlayer(playerId: string) {
@@ -310,6 +314,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 				const previous = i === 0 ? game.currentCard : newDiscards[i - 1];
 				if (card.color instanceof Array && typeof previous.color === "string") card.colorOverride = previous.colorOverride ?? previous.color;
 			}
+			game.lastDiscarder = socket.data.playerId;
 			game.discard.push(game.currentCard, ...newDiscards);
 			game.currentCard = cards.at(-1)!;
 

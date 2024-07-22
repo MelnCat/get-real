@@ -50,7 +50,7 @@ const aliases = {
 } as const;
 
 const cardBackgroundForColor = (color: string | string[], colorOverride: string | undefined) => {
-	if (colorOverride?.startsWith("url(")) return colorOverride;
+	if (colorOverride?.startsWith("url(") || colorOverride === "transparent") return colorOverride;
 	const real = typeof color === "string" && color in aliases ? aliases[color as keyof typeof aliases] : color;
 	if (real instanceof Array && real.length > 1) {
 		return `linear-gradient(${real.filter(x => !x.startsWith("url(")).join(", ")})`;
@@ -58,7 +58,7 @@ const cardBackgroundForColor = (color: string | string[], colorOverride: string 
 	return typeof real === "string" ? real : real[0];
 };
 const ringBackgroundForColor = (color: string | string[], colorOverride: string | undefined) => {
-	if (colorOverride?.startsWith("url(")) return "transparent";
+	if (colorOverride?.startsWith("url(") || colorOverride === "transparent") return "transparent";
 	const real = typeof color === "string" && color in aliases ? aliases[color as keyof typeof aliases] : color;
 	if (real instanceof Array && real.length > 1) {
 		return `conic-gradient(${real.filter(x => !x.startsWith("url(")).flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;

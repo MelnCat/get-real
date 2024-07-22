@@ -18,10 +18,12 @@ import { getPlayerAngle, getPlayerRadian, requiredVotekickCount } from "../util/
 const InnerDeckCard = ({ index, length, ...other }: { index: number; length: number }) => {
 	const ref = useRef(null);
 	const modulus = length < 200 ? 1 : 2;
+	const [exiting, setExiting] = useState(false);
 	return (
 		<CSSTransition
 			nodeRef={ref}
-			timeout={1000}
+			timeout={1000 + (length - index) * 50}
+			onExit={() => setExiting(true)}
 			classNames={{
 				exit: styles.deckExit,
 			}}
@@ -33,10 +35,11 @@ const InnerDeckCard = ({ index, length, ...other }: { index: number; length: num
 				style={{
 					"--deck-index": index,
 					"--d": modulus,
-					display: length - index > 10 ? (index % modulus === 0 ? undefined : "none") : undefined,
+					"--exit-delay": `${50 * (length - index)}ms`,
+					"--deck-card-display": length - index > 10 ? (index % modulus === 0 ? "initial" : "none") : undefined,
 				}}
 			>
-				{index + 10 > length - 1 ? <BackCard height="12em" /> : <EmptyCard height="12em" />}
+				{exiting || index + 10 > length - 1 ? <BackCard height="12em" /> : <EmptyCard height="12em" />}
 			</div>
 		</CSSTransition>
 	);
@@ -85,9 +88,8 @@ export default function GamePage() {
 		const list = [...game.playerList].reverse();
 		const selfIndex = list.indexOf(auth.name ?? "");
 		if (selfIndex === -1) return list;
-		return list.slice(0, selfIndex).concat(list.slice(selfIndex + 1));
+		return list.slice(selfIndex + 1).concat(list.slice(0, selfIndex));
 	}, [auth, game]);
-
 	useEffect(() => {
 		if (auth.name === null) router.replace("/setup");
 		else if (room === null) router.replace("/rooms");
@@ -136,6 +138,7 @@ export default function GamePage() {
 		if (room.state !== "play" || !game.canPlay || !game.yourTurn) return;
 		const card = game.hand.find(x => x.id === id);
 		if (card === undefined) return;
+		event?.preventDefault();
 		if (!selected.includes(id)) {
 			if (selected.length === 0 && (!game.pickup || getPickupValue(card) !== null) && canPlay(game.currentCard, card)) {
 				setSelected(x => x.concat(id).concat(game.hand.filter(y => y.id !== card.id && canMatch(card, y)).map(y => y.id)));
@@ -198,9 +201,9 @@ export default function GamePage() {
 						"--exit-transform":
 							game.lastDrawer === auth.name
 								? "translateX(100%) rotateX(-25deg) translateZ(40em) translateY(100vh) translateX(20vw)"
-								: `translateX(100%) translate(${24 * Math.cos(getPlayerRadian(game.playerList.length, game.playerList.indexOf(game.lastDrawer ?? "")))}em, ${
-										-24 * Math.sin(getPlayerRadian(game.playerList.length, game.playerList.indexOf(game.lastDrawer ?? "")))
-								  }em)`,
+								: `translateX(100%) rotateX(-25deg) rotateX(25deg) translateZ(2em) scale(0.6)  translate(${
+										42 * Math.cos(getPlayerRadian(game.playerList.length, rotatedPlayerList.indexOf(game.lastDrawer ?? "")))
+								  }em, ${-42 * Math.sin(getPlayerRadian(game.playerList.length, rotatedPlayerList.indexOf(game.lastDrawer ?? "")))}em)`,
 					}}
 					{...((game.lastPlayer === auth.name && !game.yourTurn && !game.pickedUp) || pickingUp || (game.pickedUp && game.yourTurn) ? { "data-turn": true } : null)}
 					{...(game.yourTurn && !game.pickedUp ? { "data-clickable": true } : null)}
@@ -245,7 +248,18 @@ export default function GamePage() {
 						</div>
 					</div>
 				))}
-				<div className={styles.discard} {...(game.lastPlayer === auth.name || (game.yourTurn && game.configurationState !== null) ? { "data-last-turn": true } : null)}>
+				<div
+					className={styles.discard}
+					style={{
+						"--enter-transform":
+							game.lastDiscarder === auth.name
+								? `translateZ(34em) translateY(71vh) translateX(1vw) rotateX(-25deg)`
+								: `translateX(-60%) rotateX(-25deg) translateZ(2em) scale(0.6) translate(${
+										42 * Math.cos(getPlayerRadian(game.playerList.length, rotatedPlayerList.indexOf(game.lastDiscarder ?? "")))
+								  }em, ${-42 * Math.sin(getPlayerRadian(game.playerList.length, rotatedPlayerList.indexOf(game.lastDiscarder ?? "")))}em)`,
+					}}
+					{...(game.lastPlayer === auth.name || (game.yourTurn && game.configurationState !== null) ? { "data-last-turn": true } : null)}
+				>
 					<TransitionGroup component={null} exit={false}>
 						{game.lastDiscards.concat(game.currentCard).map((x, i, a) => (
 							<DiscardCard card={x} index={i} key={x.id} />
@@ -316,7 +330,7 @@ export default function GamePage() {
 						"--column-count":
 							[0, 1, 2, 3, 2, 3, 3, 4, 4][game.currentCard.color.length] ??
 							(game.currentCard.color.length > 100
-								? 20
+								? 15
 								: game.currentCard.color.length % 5 === 0
 								? 5
 								: game.currentCard.color.length % 4 === 0
@@ -326,6 +340,7 @@ export default function GamePage() {
 								: game.currentCard.color.length % 2 === 0
 								? game.currentCard.color.length / 2
 								: 5),
+						fontSize: game.currentCard.color.length > 100 ? "var(--cursed-font-size)" : ""
 					}}
 				>
 					{game.currentCard.color instanceof Array
@@ -361,8 +376,8 @@ export default function GamePage() {
 					<h1>Game Over</h1>
 					<ul>
 						{game.winners.map((x, i, a) => (
-							<li key={x.name}>
-								<b>{i === a.length - 1 ? "DNF" : `#${i + 1}`}</b>: {x.name}
+							<li key={x.name} {...(i === a.length - 1 && game.playerList.length > 1 ? { "data-dnf": true } : {})}>
+								<b>{i === a.length - 1 && game.playerList.length > 1 ? "DNF" : `#${i + 1}`}</b>: {x.name}
 								{x.extra && <span>{x.extra}</span>}
 							</li>
 						))}
