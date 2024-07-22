@@ -1,0 +1,14 @@
+.main {
+	perspective: 1000px;
+	width: 1000px;
+	height: 600px;
+	background-color: blue;
+	article {
+		transition: rotateX 0.2s;
+	}
+}
+.bottom {
+	position: absolute;
+	bottom: 0;
+
+}
