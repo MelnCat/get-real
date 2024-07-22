@@ -14,14 +14,14 @@ import fontColorContrast from "font-color-contrast";
 import React from "react";
 import { roboto } from "@/font";
 import { numberFormat } from "../util/format";
-import { requiredVotekickCount } from "../util/util";
+import { getPlayerAngle, getPlayerRadian, requiredVotekickCount } from "../util/util";
 const InnerDeckCard = ({ index, length, ...other }: { index: number; length: number }) => {
 	const ref = useRef(null);
 	const modulus = length < 200 ? 1 : 2;
 	return (
 		<CSSTransition
 			nodeRef={ref}
-			timeout={500}
+			timeout={1000}
 			classNames={{
 				exit: styles.deckExit,
 			}}
@@ -80,6 +80,13 @@ export default function GamePage() {
 	const handRef = useRef<HTMLDivElement | null>(null);
 	const justClicked = useRef<Record<string, number>>({});
 	const formattedPickup = useMemo(() => (game?.pickup ? numberFormat.format(Math.abs(game.pickup)) : ""), [game?.pickup]);
+	const rotatedPlayerList = useMemo(() => {
+		if (!game) return [];
+		const list = [...game.playerList].reverse();
+		const selfIndex = list.indexOf(auth.name ?? "");
+		if (selfIndex === -1) return list;
+		return list.slice(0, selfIndex).concat(list.slice(selfIndex + 1));
+	}, [auth, game]);
 
 	useEffect(() => {
 		if (auth.name === null) router.replace("/setup");
@@ -187,6 +194,14 @@ export default function GamePage() {
 			>
 				<button
 					className={styles.deck}
+					style={{
+						"--exit-transform":
+							game.lastDrawer === auth.name
+								? "translateX(100%) rotateX(-25deg) translateZ(40em) translateY(100vh) translateX(20vw)"
+								: `translateX(100%) translate(${24 * Math.cos(getPlayerRadian(game.playerList.length, game.playerList.indexOf(game.lastDrawer ?? "")))}em, ${
+										-24 * Math.sin(getPlayerRadian(game.playerList.length, game.playerList.indexOf(game.lastDrawer ?? "")))
+								  }em)`,
+					}}
 					{...((game.lastPlayer === auth.name && !game.yourTurn && !game.pickedUp) || pickingUp || (game.pickedUp && game.yourTurn) ? { "data-turn": true } : null)}
 					{...(game.yourTurn && !game.pickedUp ? { "data-clickable": true } : null)}
 					onClick={onClickDeck}
@@ -209,14 +224,22 @@ export default function GamePage() {
 						{formattedPickup}
 					</div>
 				)}
-				{["adsad", "vdcc", "eae", "foo", "joe", "adkjkas", "a very long name"].map((x, i) => (
-					<div key={x} className={styles.otherPlayer} style={{ "--angle": `${(180 / (7 - 1)) * i}deg` }}>
-						<h1 className={styles.playerName}>{x}</h1>
+				{rotatedPlayerList.map((x, i) => (
+					<div
+						key={x}
+						className={styles.otherPlayer}
+						style={{ "--angle": `${getPlayerAngle(game.playerList.length, i)}deg` }}
+						{...(x === game.playerList[game.currIndex] ? { "data-active": true } : null)}
+					>
+						<h1 className={styles.playerName}>
+							{x}
+							<span className={styles.cardCount}>{game.playerHands[x]}</span>
+						</h1>
 						<div className={styles.playerImage} />
 						<div className={styles.otherPlayerHand}>
-							{[...Array(Math.abs(Math.floor(Math.tan(i + 3) * 2) % 10) + 1)].map(j => (
+							{[...Array(game.playerHands[x])].map(j => (
 								<div className={styles.otherPlayerCard} key={j}>
-									<BackCard  />
+									<BackCard height="8em" />
 								</div>
 							))}
 						</div>
@@ -291,7 +314,8 @@ export default function GamePage() {
 					className={styles.colorConfig}
 					style={{
 						"--column-count":
-							[0, 1, 2, 3, 2, 3, 3, 4, 4][game.currentCard.color.length] ?? game.currentCard.color.length > 100
+							[0, 1, 2, 3, 2, 3, 3, 4, 4][game.currentCard.color.length] ??
+							(game.currentCard.color.length > 100
 								? 20
 								: game.currentCard.color.length % 5 === 0
 								? 5
@@ -301,7 +325,7 @@ export default function GamePage() {
 								? 3
 								: game.currentCard.color.length % 2 === 0
 								? game.currentCard.color.length / 2
-								: 5,
+								: 5),
 					}}
 				>
 					{game.currentCard.color instanceof Array
@@ -331,22 +355,7 @@ export default function GamePage() {
 						))}
 				</div>
 			)}
-			<div className={styles.temporary}>
-				{game?.playerList.map((x, i) => (
-					<div key={x}>
-						<span
-							style={{
-								color: game.currIndex === i ? "yellow" : "#eee",
-								fontWeight: game.currIndex === i ? "bold" : "",
-								textDecoration: game.currIndex === i ? "underline" : "",
-							}}
-						>
-							{x}
-						</span>
-						: {game.playerHands[x]} Card(s)
-					</div>
-				))}
-			</div>
+			<div className={styles.temporary}>{game.lastDrawer}</div>
 			{room.state === "end" ? (
 				<div className={`${roboto.className} ${styles.endScreen}`}>
 					<h1>Game Over</h1>

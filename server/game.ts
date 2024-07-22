@@ -54,6 +54,7 @@ export interface ClientGameData {
 	rules: GameRules;
 	votekickCount: number;
 	votekicked: boolean;
+	lastDrawer: string | null;
 }
 
 export interface EnhancedClientGameData extends ClientGameData {
@@ -91,6 +92,7 @@ export interface Game {
 	takeCard(): PlayedCard | null;
 	rules: GameRules;
 	votekickers: string[];
+	lastDrawer: string | null;
 }
 
 export const gameManager = {
@@ -123,6 +125,7 @@ export const gameManager = {
 			winners: [],
 			rules: room.rules,
 			votekickers: [],
+			lastDrawer: null,
 			takeDeck(count: number) {
 				const took = this.deck.splice(0, count);
 				if (took.length < count) {
@@ -166,7 +169,8 @@ export const gameManager = {
 			winners: game.winners.map(x => ({ name: players[x.id].name, extra: x.extra })),
 			rules: game.rules,
 			votekickCount: game.votekickers.length,
-			votekicked: game.votekickers.includes(playerId)
+			votekicked: game.votekickers.includes(playerId),
+			lastDrawer: players[game.lastDrawer ?? ""]?.name,
 		};
 	},
 	byPlayer(playerId: string) {
@@ -249,6 +253,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 		for (const [id, data] of Object.entries(game.players)) {
 			if (data.cards.length === 1 && !data.called) {
 				for (const card of game.takeDeck(game.rules.unrealPenalty)) data.cards.push(card);
+				game.lastDrawer = id;
 				gameManager.resendGame(game.room);
 				players[id].socket.emit("game:pickup", game.rules.unrealPenalty);
 			}
@@ -278,6 +283,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 			game.canPlay = false;
 			if (!game.pickedUp) {
 				const drawnCard = game.takeCard();
+				game.lastDrawer = socket.data.playerId;
 				if (drawnCard !== null) {
 					game.players[socket.data.playerId].cards.push(drawnCard);
 					if (canPlay(game.currentCard, drawnCard)) {
@@ -344,7 +350,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 		if (game.playerList[game.currIndex] !== socket.data.playerId) return;
 		if (!game.canPlay || game.pickup === 0) return;
 		game.pickup = Math.floor(game.pickup);
-
+		game.lastDrawer = socket.data.playerId;
 		if (game.pickup > 0) for (const card of game.takeDeck(game.pickup)) game.players[socket.data.playerId].cards.push(card);
 		else {
 			const iterCount = Math.min(-game.pickup, game.players[socket.data.playerId].cards.length);

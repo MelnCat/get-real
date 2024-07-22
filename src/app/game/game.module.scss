@@ -1,7 +1,7 @@
 .main {
 	overflow: hidden;
 	height: 100dvh;
-	perspective: 500px;
+	perspective: 600px;
 	&::before {
 		content: "";
 		position: absolute;
@@ -23,18 +23,18 @@
 	width: 50vw;
 	height: 40vw;
 	min-width: 40em;
-	min-height: 20em;
+	min-height: 25em;
 	top: 50%;
 	left: 50%;
 	display: grid;
 	grid-template: 1fr 1fr 1fr / 2fr 2fr 1fr;
-    padding: 5em;
+	padding: 5em;
 	> * {
 		transform-style: preserve-3d;
 	}
 	transform-style: preserve-3d;
 	translate: -50% -50% -150px;
-	transform: rotateX(25deg) translate3d(var(--offset-x), var(--offset-y), 0) translateY(-10%);
+	transform: rotateX(25deg) translate3d(var(--offset-x), var(--offset-y), -2em) translateY(-10%);
 	//animation: debug-spin linear infinite 10s;
 	@media screen and (max-width: 500px) {
 		grid-template: 1fr 1fr 1fr 1fr 1fr / 1fr 1fr;
@@ -63,8 +63,8 @@
 	position: absolute;
 	top: -100vh;
 	left: 0;
-    width: 150vw;
-    height: 150vh;
+	width: 150vw;
+	height: 150vh;
 	transform: translate3d(-50%, -50%, -1000px) scale(4);
 	--s: 120px;
 	--c1: #928e8b;
@@ -109,11 +109,10 @@
 			}
 		}
 	}
-	&[data-turn] {
 		.deckExit {
-			transform: rotateX(-25deg) translateZ(40em) translateY(100vh) translateX(20vw);
+			transform: var(--exit-transform);
 		}
-	}
+	
 }
 .pickupIcon {
 	margin: auto;
@@ -151,7 +150,7 @@
 	}
 	&[data-last-turn] {
 		.discardEnter {
-			transform: rotateX(-25deg) translateZ(34em) translateY(71vh) translateX(1vw);
+			transform: var(--enter-transform);
 		}
 		.discardEnterActive {
 			transform: translate3d(calc(sin(tan(var(--random-seed) * 42)) * 0.5em), calc(sin(tan(var(--random-seed) * 4)) * 0.5em), calc(var(--card-index) * 0.1em))
@@ -425,7 +424,7 @@
 	position: fixed;
 	top: 1em;
 	right: 1em;
-    transform: translateZ(0);
+	transform: translateZ(0);
 	display: flex;
 	flex-direction: column;
 	gap: 0.25em;
@@ -447,28 +446,50 @@
 	}
 }
 
-
 .otherPlayer {
+	--distance: clamp(22em, 42vw, 40em);
 	position: absolute;
 	margin: auto;
 	left: 50%;
-	top: 50%;
-	transform: translateZ(1em) rotateX(0deg) translateX(-50%) translateY(-50%) rotateX(-90deg) rotateY(var(--angle)) translateX(clamp(22em, 42vw, 40em)) rotateY(-90deg);
+	top: 55%;
+	transform: translateZ(1em) rotateX(0deg) translateX(-50%) translateY(-50%) rotateX(-90deg) rotateY(var(--angle)) translateX(var(--distance)) rotateY(-90deg);
 	user-select: none;
-	//transform: translateZ(300px) rotateX(-50deg) translateX(-50%) translateX(0.5em);
+	@media screen and (max-width: 500px) {
+		font-size: 0.8em;
+		--distance: clamp(22em, 60vw, 40em);
+	}
+	color: #ffffff;
+	&[data-active] {
+		color: #ffff77;
+		.playerName {
+			text-shadow: 0 0 16px #ffff77;
+		}
+		&,
+		.cardCount,
+		.otherPlayerHand {
+			box-shadow: 0 0 16px 4px #ffff77;
+		}
+	}
 }
 .playerName {
-    font-size: 2em;
-    text-align: center;
-    transform: translateX(-50%) rotateY(calc(-1* var(--angle))) rotateY(90deg) rotateX(63deg);
-    color: #ffffff;
-    -webkit-text-stroke: #000000 5px;
-    font-weight: 900;
-    paint-order: stroke fill;
-    position: absolute;
-    top: -0.8em;
-    left: 50%;
-    text-wrap: nowrap;
+	font-size: 1.8em;
+	text-align: center;
+	transform: translateX(-50%) rotateY(calc(-1 * var(--angle))) rotateY(90deg) rotateX(63deg);
+	-webkit-text-stroke: #000000 5px;
+	font-weight: 900;
+	paint-order: stroke fill;
+	position: absolute;
+	top: -0.9em;
+	left: 50%;
+	text-wrap: nowrap;
+	.cardCount {
+		background-color: #8f8f8f;
+		border: black 2px solid;
+		padding: 0.05em 0.2em;
+		border-radius: 0.2em;
+		margin-left: 0.3em;
+		display: inline-block;
+	}
 }
 .playerImage {
 	width: 10em;
@@ -482,9 +503,13 @@
 	top: 20%;
 	transform: translateX(-50%) translateZ(3em);
 	max-width: 14em;
+	border-radius: 0.39em;
 }
 .otherPlayerCard {
 	flex-shrink: 1;
 	min-width: 0;
 	overflow: visible;
+	&:last-child {
+		flex-shrink: 0;
+	}
 }
