@@ -1,7 +1,7 @@
 .main {
 	overflow: hidden;
 	height: 100dvh;
-	perspective: 700px;
+	perspective: 500px;
 	&::before {
 		content: "";
 		position: absolute;
@@ -20,15 +20,15 @@
 }
 .table {
 	position: absolute;
-	width: 70vw;
-	height: 70vw;
+	width: 50vw;
+	height: 40vw;
 	min-width: 40em;
-	min-height: 40em;
+	min-height: 20em;
 	top: 50%;
 	left: 50%;
 	display: grid;
-	grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
-	padding: 10%;
+	grid-template: 1fr 1fr 1fr / 2fr 2fr 1fr;
+    padding: 5em;
 	> * {
 		transform-style: preserve-3d;
 	}
@@ -61,10 +61,10 @@
 .table::after {
 	content: "";
 	position: absolute;
-	top: 0;
+	top: -100vh;
 	left: 0;
-	width: 300%;
-	height: 200%;
+    width: 150vw;
+    height: 150vh;
 	transform: translate3d(-50%, -50%, -1000px) scale(4);
 	--s: 120px;
 	--c1: #928e8b;
@@ -445,4 +445,46 @@
 	&:active {
 		background-color: #bbb;
 	}
+}
+
+
+.otherPlayer {
+	position: absolute;
+	margin: auto;
+	left: 50%;
+	top: 50%;
+	transform: translateZ(1em) rotateX(0deg) translateX(-50%) translateY(-50%) rotateX(-90deg) rotateY(var(--angle)) translateX(clamp(22em, 42vw, 40em)) rotateY(-90deg);
+	user-select: none;
+	//transform: translateZ(300px) rotateX(-50deg) translateX(-50%) translateX(0.5em);
+}
+.playerName {
+    font-size: 2em;
+    text-align: center;
+    transform: translateX(-50%) rotateY(calc(-1* var(--angle))) rotateY(90deg) rotateX(63deg);
+    color: #ffffff;
+    -webkit-text-stroke: #000000 5px;
+    font-weight: 900;
+    paint-order: stroke fill;
+    position: absolute;
+    top: -0.8em;
+    left: 50%;
+    text-wrap: nowrap;
+}
+.playerImage {
+	width: 10em;
+	height: 18em;
+	background-color: black;
+}
+.otherPlayerHand {
+	display: flex;
+	position: absolute;
+	left: 50%;
+	top: 20%;
+	transform: translateX(-50%) translateZ(3em);
+	max-width: 14em;
+}
+.otherPlayerCard {
+	flex-shrink: 1;
+	min-width: 0;
+	overflow: visible;
 }

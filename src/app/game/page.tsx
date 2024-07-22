@@ -170,7 +170,7 @@ export default function GamePage() {
 	};
 	const onClickVotekick = () => {
 		if (!game.votekicked) socket.emit("game:votekick");
-	}
+	};
 
 	return (
 		<main className={styles.main} {...(game.yourTurn ? { "data-turn": true } : null)}>
@@ -209,6 +209,19 @@ export default function GamePage() {
 						{formattedPickup}
 					</div>
 				)}
+				{["adsad", "vdcc", "eae", "foo", "joe", "adkjkas", "a very long name"].map((x, i) => (
+					<div key={x} className={styles.otherPlayer} style={{ "--angle": `${(180 / (7 - 1)) * i}deg` }}>
+						<h1 className={styles.playerName}>{x}</h1>
+						<div className={styles.playerImage} />
+						<div className={styles.otherPlayerHand}>
+							{[...Array(Math.abs(Math.floor(Math.tan(i + 3) * 2) % 10) + 1)].map(j => (
+								<div className={styles.otherPlayerCard} key={j}>
+									<BackCard  />
+								</div>
+							))}
+						</div>
+					</div>
+				))}
 				<div className={styles.discard} {...(game.lastPlayer === auth.name || (game.yourTurn && game.configurationState !== null) ? { "data-last-turn": true } : null)}>
 					<TransitionGroup component={null} exit={false}>
 						{game.lastDiscards.concat(game.currentCard).map((x, i, a) => (
