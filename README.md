@@ -9,7 +9,7 @@ Deployed at: https://getreal.crab.trade/
 
 > Thanks for the cards, but we'll take it from here
 
-
+https://github.com/user-attachments/assets/2485a644-a2fe-4e5a-b252-e7e0948f229b
 
 A card game with custom pickup cards, multiple different decks, and rules that people _actually_ play with:
 
