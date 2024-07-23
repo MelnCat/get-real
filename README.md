@@ -35,7 +35,7 @@ An expanded version of the original deck with 6 colors, numbers 0-16, wild numbe
 
 ## Speedrun
 
-<img src="./readme-assets/deck/speedrun.png" height="240"/>
+<img src="./readme-assets/deck/speedrun.png" height="200"/>
 
 A version of the normal Get Real with only 2 colors, 8 of each number, and +1s.
 
