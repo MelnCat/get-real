@@ -1,14 +1,23 @@
 .main {
-	perspective: 1000px;
 	width: 1000px;
 	height: 600px;
-	background-color: blue;
+	display: grid;
+	place-content: center;
+	background-color: #000000;
+	> * {
+		grid-area: 1 / 1;
+	}
 	article {
-		transition: rotateX 0.2s;
+		transform-origin: center 30em;
+		&:first-child {
+			rotate: -30deg;
+		}
+		&:nth-child(3) {
+			rotate: 30deg;
+		}
 	}
 }
 .bottom {
 	position: absolute;
 	bottom: 0;
-
 }

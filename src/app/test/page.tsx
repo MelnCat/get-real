@@ -10,19 +10,10 @@ export default function Test() {
 	const [clicked, setClicked] = useState(true);
 	return (
 		<main className={styles.main}>
-			<button onClick={() => setClicked(x => !x)}>click</button>
-			{clicked && (
-				<motion.article layout="position" style={{rotate:"0deg"}}  layoutId="a" className={styles.a}>
-					<Card symbol="A" color="red" />
-				</motion.article>
-			)}
-			<section className={styles.bottom}>
-				{!clicked && (
-					<motion.article layout="position"  style={{rotate:"0deg"}} layoutId="a">
-						<Card symbol="A" color="red" />
-					</motion.article>
-				)}
-			</section>
+			<Card color="multicolor" symbol="+∞" height="20em" />
+			<Card color="red" symbol="3" height="20em" />
+			<BackCard height="20em" />
+
 		</main>
 	);
 }

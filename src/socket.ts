@@ -6,5 +6,11 @@ import parser from "socket.io-msgpack-parser";
 
 export const socket = io({ parser }) as TypedCSocket;
 socket.on("disconnect", e => {
-    if (process.env.NODE_ENV !== "development") location.reload();
+	console.log("discon");
+	if (document.hasFocus()) location.reload();
+	else {
+		document.addEventListener("visibilitychange", () => {
+			location.reload();
+		});
+	}
 });

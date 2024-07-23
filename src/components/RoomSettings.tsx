@@ -44,7 +44,7 @@ export const RoomSettings = ({
 				<div className={styles.rule}>
 					<p>Pickup Until Playable</p>
 					<input
-						checked={settings?.rules.pickupUntilPlayable}
+						checked={settings?.rules.pickupUntilPlayable ?? false}
 						disabled={disabled}
 						type="checkbox"
 						onChange={() => setRules(x => ({ ...x, pickupUntilPlayable: !x.pickupUntilPlayable }))}
@@ -52,24 +52,24 @@ export const RoomSettings = ({
 				</div>
 				<div className={styles.rule}>
 					<p>Starting Card Count</p>
-					<input value={settings?.rules.startingCards} disabled={disabled} type="number" onChange={e => setRules(x => ({ ...x, startingCards: +e.target.value }))} />
+					<input value={settings?.rules.startingCards ?? ""} disabled={disabled} type="number" onChange={e => setRules(x => ({ ...x, startingCards: +e.target.value }))} />
 				</div>
 				<div className={styles.rule}>
 					<p>Unannounced 1 Card Penalty</p>
-					<input value={settings?.rules.unrealPenalty} disabled={disabled} type="number" onChange={e => setRules(x => ({ ...x, unrealPenalty: +e.target.value }))} />
+					<input value={settings?.rules.unrealPenalty  ?? ""} disabled={disabled} type="number" onChange={e => setRules(x => ({ ...x, unrealPenalty: +e.target.value }))} />
 				</div>
 			</div>
 			<div className={styles.rules}>
 				<h3>Room Settings</h3>
 				<div className={styles.rule}>
-					Unlisted <input type="checkbox" disabled={disabled} checked={settings?.unlisted} onChange={e => setSettings(x => ({ ...x, unlisted: e.target.checked }))} />
+					Unlisted <input type="checkbox" disabled={disabled} checked={settings?.unlisted ?? false} onChange={e => setSettings(x => ({ ...x, unlisted: e.target.checked }))} />
 				</div>
 				<div className={styles.rule}>
 					Allow joining during gameplay?{" "}
-					<input disabled={disabled} type="checkbox" checked={settings?.lateJoins} onChange={e => setSettings(x => ({ ...x, lateJoins: e.target.checked }))} />
+					<input disabled={disabled} type="checkbox" checked={settings?.lateJoins ?? false} onChange={e => setSettings(x => ({ ...x, lateJoins: e.target.checked }))} />
 				</div>
 				<div className={styles.rule}>
-					Max Players <input disabled={disabled} type="number" value={settings?.max} onChange={e => setSettings(x => ({ ...x, max: +e.target.value }))} />
+					Max Players <input disabled={disabled} type="number" value={settings?.max ?? ""} onChange={e => setSettings(x => ({ ...x, max: +e.target.value }))} />
 				</div>
 			</div>
 		</>

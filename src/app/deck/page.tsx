@@ -16,14 +16,16 @@ const Deck = () => {
 	);
 	return (
 		<main className={styles.main}>
-			{decks.map(([name, cards]) => (
+			{decks.map(([name, cards]) => {
+				const length = cards.get([...cards.keys()][0])!.length;
+				return (
 				<>
 					{!searchParams.has("deck") ? (
-						<h1>
+						<h1 key={`${name} title`}>
 							{name} [{[...cards.values()].flat().length}]
 						</h1>
 					) : null}
-					<section key={name} style={{ gridTemplateColumns: `repeat(${cards.get([...cards.keys()][0])!.length}, 1fr)` }}>
+					<section key={name} style={{ gridTemplateColumns: `repeat(${length > 44 ? Math.floor(length / 2) : length}, 1fr)` }}>
 						{[...cards.entries()].map(([color, values], j) =>
 							values.map((card, i) => (
 								<div key={`${color}_${i}`} className={styles.card} style={{}}>
@@ -33,7 +35,7 @@ const Deck = () => {
 						)}
 					</section>
 				</>
-			))}
+			)})}
 		</main>
 	);
 }
