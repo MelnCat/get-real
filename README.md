@@ -11,7 +11,11 @@ Deployed at: https://getreal.crab.trade/
 
 https://github.com/user-attachments/assets/2485a644-a2fe-4e5a-b252-e7e0948f229b
 
-A card game with custom pickup cards, multiple different decks, and rules that people _actually_ play with:
+A card game with custom pickup cards, multiple different decks, and rules that people _actually_ play with.
+
+Ever wondered why UNO doesn't have a +1000? Now, you can find out!
+
+Rules:
 
 -   You can play multiple cards in one turn, given that they have the same number or symbol.
 -   You can stack pickups to avoid picking up and pushing it to the next person.
@@ -50,3 +54,8 @@ A very cursed deck. Includes 12 colors, +∞, french and german wild cards, and 
 <img src="./readme-assets/deck/neverending.png" height="480"/>
 
 A massive deck with equally massive pickup cards. Contains 161 colors (one for each named CSS color!), +∞, +1000, and other devastating cards.
+
+# How to Run
+
+First, clone the repository locally, and install all packages with `yarn`. Afterwards, run `yarn dev` to start up the development environment. After you're done, run `yarn build` to build the production build, and `yarn start` to start the production server.
+``
