@@ -25,6 +25,11 @@ Rules:
 
 Get Real offers several different decks to choose from:
 
+# Self-Hosting / How to Run
+
+First, clone the repository locally, and install all packages with `yarn`. Afterwards, run `yarn dev` to start up the development environment. After you're done, run `yarn build` to build the production build, and `yarn start` to start the production server.
+``
+
 ## Original
 
 <img src="./readme-assets/deck/original.png" height="240"/>
@@ -54,8 +59,3 @@ A very cursed deck. Includes 12 colors, +∞, french and german wild cards, and 
 <img src="./readme-assets/deck/neverending.png" height="480"/>
 
 A massive deck with equally massive pickup cards. Contains 161 colors (one for each named CSS color!), +∞, +1000, and other devastating cards.
-
-# How to Run
-
-First, clone the repository locally, and install all packages with `yarn`. Afterwards, run `yarn dev` to start up the development environment. After you're done, run `yarn build` to build the production build, and `yarn start` to start the production server.
-``
