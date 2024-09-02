@@ -30,6 +30,8 @@ Get Real offers several different decks to choose from:
 First, clone the repository locally, and install all packages with `yarn`. Afterwards, run `yarn dev` to start up the development environment. After you're done, run `yarn build` to build the production build, and `yarn start` to start the production server.
 ``
 
+# Decks
+
 ## Original
 
 <img src="./readme-assets/deck/original.png" height="240"/>
