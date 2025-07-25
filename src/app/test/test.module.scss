@@ -1,21 +1,28 @@
 .main {
 	width: 1000px;
 	height: 600px;
-	display: grid;
-	place-content: center;
-	background-color: #000000;
-	> * {
-		grid-area: 1 / 1;
-	}
-	article {
-		transform-origin: center 30em;
-		&:first-child {
-			rotate: -30deg;
-		}
-		&:nth-child(3) {
-			rotate: 30deg;
-		}
-	}
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+	// display: grid;
+	// place-content: center;
+	// background-color: #000000;
+	// > * {
+	// 	grid-area: 1 / 1;
+	// }
+	// article {
+	// 	transform-origin: center 30em;
+	// 	&:first-child {
+	// 		rotate: -30deg;
+	// 	}
+	// 	&:nth-child(3) {
+	// 		rotate: 30deg;
+	// 	}
+	// }
+}
+.row {
+	display: flex;
+	gap: 1em;
 }
 .bottom {
 	position: absolute;

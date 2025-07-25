@@ -2,6 +2,8 @@ import { roboto } from "@/font";
 import styles from "./Card.module.scss";
 import { icons } from "./icons";
 import mix from "mix-css-color";
+import { useMemo } from "react";
+import { NewCard } from "./NewCard";
 
 const sizeForSymbol = (symbol: string) => {
 	const practicalLength = symbol
@@ -61,9 +63,12 @@ const ringBackgroundForColor = (color: string | string[], colorOverride: string 
 	if (colorOverride?.startsWith("url(") || colorOverride === "transparent") return "transparent";
 	const real = typeof color === "string" && color in aliases ? aliases[color as keyof typeof aliases] : color;
 	if (real instanceof Array && real.length > 1) {
-		return `conic-gradient(${real.filter(x => !x.startsWith("url(")).flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`]).join(", ")})`;
+		return `conic-gradient(${real
+			.filter(x => !x.startsWith("url("))
+			.flatMap((x, i, a) => [`${x} ${(360 / a.length) * i}deg`, `${x} ${(360 / a.length) * (i + 1)}deg`])
+			.join(", ")})`;
 	}
-	return typeof real === "string" ? real.startsWith("url(") ? "" : real : real[0];
+	return typeof real === "string" ? (real.startsWith("url(") ? "" : real) : real[0];
 };
 
 interface CardOptions {
@@ -83,39 +88,12 @@ const CardRing = ({ color, colorOverride }: { color: string | string[]; colorOve
 			className={styles.ring}
 			style={{
 				background: ringBackgroundForColor(color, colorOverride),
-				"--color-override": colorOverride ? colorOverride.startsWith("url(") ? colorOverride : mix("transparent", colorOverride, 50).hexa : "",
+				"--color-override": colorOverride ? (colorOverride.startsWith("url(") ? colorOverride : mix("transparent", colorOverride, 50).hexa) : "",
 			}}
 		></div>
 	);
 };
 
-export const Card = ({ color, symbol, flipped = false, size = sizeForSymbol(symbol), spacing = spacingForSymbol(symbol), height = "100px", pinned = false, colorOverride }: CardOptions) => {
-	const cardBackground = cardBackgroundForColor(color, colorOverride);
-	return (
-		<article
-			className={`${roboto.className} ${styles.cardWrapper}`}
-			style={{ height, ...(flipped && { transform: "rotateY(180deg)" }), ...(pinned && { top: 0, left: 0, position: "absolute" }) }}
-		>
-			<div
-				className={styles.card}
-				style={{
-					[cardBackground.startsWith("url(") || cardBackground.includes("gradient(") ? "backgroundImage" : "backgroundColor"]: cardBackground,
-					backgroundPosition: "center center",
-					backgroundSize: "cover",
-					"--color-override": colorOverride ?? "",
-				}}
-				data-size={size}
-				data-spacing={spacing}
-				data-foo={JSON.stringify(colorOverride)}
-			>
-				{sideElementForSymbol(symbol)}
-				{sideElementForSymbol(symbol, true)}
-				{elementForSymbol(symbol)}
-				<CardRing color={color} colorOverride={colorOverride} />
-			</div>
-		</article>
-	);
-};
 
 export const BackCard = ({ height = "100px", flipped = false, pinned = false }: { height?: string; flipped?: boolean; pinned?: boolean }) => {
 	return (
@@ -143,6 +121,51 @@ export const DualCard = ({ height = "100px", flipped = false, color, symbol, siz
 		<article className={styles.dualCard} style={{ height }}>
 			<BackCard height={height} pinned flipped={flipped} />
 			<Card symbol={symbol} spacing={spacing} color={color} height={height} flipped={!flipped} size={size} pinned />
+		</article>
+	);
+};
+
+export const Card = ({
+	color,
+	symbol,
+	flipped = false,
+	size = sizeForSymbol(symbol),
+	spacing = spacingForSymbol(symbol),
+	height = "100px",
+	pinned = false,
+	colorOverride,
+}: CardOptions) => {
+	return (
+		<article
+			className={`${roboto.className} ${styles.newCardWrapper}`}
+			style={{ height, ...(flipped && { transform: "rotateY(180deg)" }), ...(pinned && { top: 0, left: 0, position: "absolute" }) }}
+		>
+			<NewCard color={color} symbol={symbol} flipped={flipped} size={size} spacing={spacing} height={height} pinned={pinned} colorOverride={colorOverride} />
+		</article>
+	);
+	const cardBackground = cardBackgroundForColor(color, colorOverride);
+	return (
+		<article
+			className={`${roboto.className} ${styles.cardWrapper}`}
+			style={{ height, ...(flipped && { transform: "rotateY(180deg)" }), ...(pinned && { top: 0, left: 0, position: "absolute" }) }}
+		>
+			<div
+				className={styles.card}
+				style={{
+					[cardBackground.startsWith("url(") || cardBackground.includes("gradient(") ? "backgroundImage" : "backgroundColor"]: cardBackground,
+					backgroundPosition: "center center",
+					backgroundSize: "cover",
+					"--color-override": colorOverride ?? "",
+				}}
+				data-size={size}
+				data-spacing={spacing}
+				data-foo={JSON.stringify(colorOverride)}
+			>
+				{sideElementForSymbol(symbol)}
+				{sideElementForSymbol(symbol, true)}
+				{elementForSymbol(symbol)}
+				<CardRing color={color} colorOverride={colorOverride} />
+			</div>
 		</article>
 	);
 };

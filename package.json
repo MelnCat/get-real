@@ -23,6 +23,7 @@
 		"react-loading-skeleton": "^3.4.0",
 		"react-transition-group": "^4.4.5",
 		"sass": "^1.77.1",
+		"sharp": "^0.34.3",
 		"socket.io": "^4.7.5",
 		"socket.io-client": "^4.7.5",
 		"socket.io-msgpack-parser": "^3.0.2",
@@ -39,5 +40,6 @@
 		"eslint": "^8",
 		"eslint-config-next": "14.2.3",
 		"typescript": "^5"
-	}
+	},
+	"packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

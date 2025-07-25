@@ -3,6 +3,14 @@
 	aspect-ratio: 2 / 3;
 	backface-visibility: hidden;
 }
+.newCardWrapper {
+	aspect-ratio: 2 / 3;
+	backface-visibility: hidden;
+	svg {
+		height: 100%;
+		width: 100%;
+	}
+}
 .card {
 	height: 100%;
 	width: 100%;
