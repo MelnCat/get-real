@@ -138,7 +138,9 @@ export const NewCard = ({
 	pinned?: boolean;
 	colorOverride?: string;
 }) => {
+	console.log(colorOverride)
 	const cardBackground = newCardBackgroundForColor(color, colorOverride);
+	const ringBackground = colorOverride ?? newCardBackgroundForColor(color, colorOverride);
 	return (
 		<svg version="1.1" width="200" height="300" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
 			<defs>
@@ -183,7 +185,7 @@ export const NewCard = ({
 				rx="18"
 				width={200 - CARD_STROKE}
 				height={300 - CARD_STROKE}
-				fill={typeof cardBackground === "string" ? cardBackground : `url(#bg_${color.toString().replaceAll(/\W/g, "")})`}
+				fill={typeof ringBackground === "string" ? ringBackground : `url(#bg_${color.toString().replaceAll(/\W/g, "")})`}
 				stroke="white"
 				strokeWidth="12"
 			/>

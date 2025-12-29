@@ -1,8 +1,21 @@
 import React from "react";
+const PICKUP_1_SIZE = 34;
 const PICKUP_2_SIZE = 58;
 const PICKUP_4_SIZE = 21;
 const PICKUP_8_SIZE = 18;
+const PICKUP_16_SIZE = 13;
+const PICKUP_32_SIZE = 9.3;
 export const icons = {
+	"+1": {
+		type: "center",
+		size: "45%",
+		element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" fill="currentColor" overflow="visible"></svg>,
+		newElement: (
+			<>
+				<rect x={(200 - 2 * PICKUP_1_SIZE) / 2} y={(300 - PICKUP_1_SIZE * 3) / 2} width={PICKUP_1_SIZE * 2} height={PICKUP_1_SIZE * 3} />
+			</>
+		),
+	},
 	"+2": {
 		type: "center",
 		size: "45%",
@@ -85,6 +98,46 @@ export const icons = {
 			</>
 		),
 	},
+	"+16": {
+		type: "center",
+		size: "70%",
+		element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700" fill="currentColor"></svg>,
+		newElement: (
+			<>
+				{[...Array(2)].map((_, j) =>
+					[...Array(8)].map((_, i) => (
+						<rect
+							key={i}
+							x={(200 + 3 * PICKUP_16_SIZE) / 2 - PICKUP_16_SIZE * i + PICKUP_16_SIZE * 2 * j}
+							y={(300 - PICKUP_16_SIZE * (8 + 3)) / 2 + PICKUP_16_SIZE * i + PICKUP_16_SIZE * j}
+							width={PICKUP_16_SIZE * 2}
+							height={PICKUP_16_SIZE * 3}
+						/>
+					))
+				)}
+			</>
+		),
+	},
+	"+32": {
+		type: "center",
+		size: "70%",
+		element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700" fill="currentColor"></svg>,
+		newElement: (
+			<>
+				{[...Array(4)].map((_, j) =>
+					[...Array(8)].map((_, i) => (
+						<rect
+							key={i}
+							x={(200 - PICKUP_32_SIZE) / 2 - PICKUP_32_SIZE * i + PICKUP_32_SIZE * 2 * j}
+							y={(300 - PICKUP_32_SIZE * (10 + 3)) / 2 + PICKUP_32_SIZE * i + PICKUP_32_SIZE * j}
+							width={PICKUP_32_SIZE * 2}
+							height={PICKUP_32_SIZE * 3}
+						/>
+					))
+				)}
+			</>
+		),
+	},
 	skip: {
 		type: "both",
 		size: "57%",
@@ -128,7 +181,7 @@ export const icons = {
 			</svg>
 		),
 		newElement: (
-			<g transform="scale(0.174) translate(290, 580)" >
+			<g transform="scale(0.174) translate(290, 580)">
 				<path d="M 0 100 L 0 200 L 400 200 L 400 300 L 600 150 L 400 0 L 400 100 L 0 100 Z" strokeWidth="27" />
 				<path d="M 0 350 L 0 450 L 400 450 L 400 550 L 600 400 L 400 250 L 400 350 L 0 350 Z" strokeWidth="27" transform="matrix(-1, 0, 0, -1, 600, 800)" />
 			</g>

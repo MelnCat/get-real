@@ -38,6 +38,14 @@ export default function Test() {
 				<Card color={deckTypes.insane.colors} symbol="reverse" height="20em" />
 				<Card color={deckTypes.insane.colors} symbol="skip" height="20em" />
 			</section>
+			<section className={styles.row}>
+				<Card color={"multicolor"} symbol="+1" height="20em" />
+				<Card color={"multicolor"} symbol="+2" height="20em" />
+				<Card color={"multicolor"} symbol="+4" height="20em" />
+				<Card color={"multicolor"} symbol="+8" height="20em" />
+				<Card color={"multicolor"} symbol="+16" height="20em" />
+				<Card color={"multicolor"} symbol="+32" height="20em" />
+			</section>
 			<hr />
 			<button onClick={foo}>do stuff</button>
 		</main>
