@@ -9,7 +9,7 @@ import { socket } from "@/socket";
 import { Flipper, Flipped } from "react-flip-toolkit";
 import { canMatch, canPlay, getPickupValue, PlayedCard } from "../../../common/cards/card";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import fontColorContrast from "font-color-contrast";
 import React from "react";
 import { roboto } from "@/font";

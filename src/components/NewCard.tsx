@@ -78,7 +78,7 @@ export const newElementForSymbol = (symbol: string) => {
 			strokeLinejoin="miter"
 			paintOrder="stroke"
 		>
-			{symbol.split("").map((x, i) => <tspan letterSpacing={i !== 0 ? 0 : -5}>{x}</tspan>)}
+			{symbol.split("").map((x, i) => <tspan key={i} letterSpacing={i !== 0 ? 0 : -5}>{x}</tspan>)}
 		</text>
 	);
 };

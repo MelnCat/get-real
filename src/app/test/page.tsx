@@ -1,12 +1,10 @@
 "use client";
-import { BackCard, Card } from "@/components/Card";
-import styles from "./test.module.scss";
-import { createDeck, mapGroupBy, deckTypes } from "../../../common/cards/card";
-import { Suspense, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { renderToString } from "react-dom/server";
+import { Card } from "@/components/Card";
 import { NewCard } from "@/components/NewCard";
+import { useState } from "react";
+import { renderToString } from "react-dom/server";
+import { deckTypes } from "../../../common/cards/card";
+import styles from "./test.module.scss";
 
 export default function Test() {
 	const [clicked, setClicked] = useState(true);
