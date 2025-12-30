@@ -315,9 +315,10 @@
 	scrollbar-width: thin;
 	pointer-events: auto;
 	.handCard {
+		transform-style: preserve-3d;
 		flex-shrink: 1;
 		transition: flex-shrink 0.2s, translate 0.15s, filter 0.2s;
-        transition-timing-function: ease-in-out;
+		transition-timing-function: ease-in-out;
 		min-width: 2em;
 		margin-top: auto;
 		&:first-child {

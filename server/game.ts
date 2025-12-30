@@ -290,7 +290,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 				game.lastDrawer = socket.data.playerId;
 				if (drawnCard !== null) {
 					game.players[socket.data.playerId].cards.push(drawnCard);
-					if (canPlay(game.currentCard, drawnCard)) {
+					if (canPlay(game.currentCard, drawnCard, game.rules)) {
 						game.pickedUp = true;
 						game.canPlay = true;
 						gameManager.resendGame(game.room);
@@ -300,7 +300,7 @@ export const registerGameEvents = (io: TypedServer, socket: TypedSocket) => {
 			} else game.pickedUp = false;
 		} else {
 			if (!allMatch(cards as Card[])) return;
-			if (!canPlay(game.currentCard, cards[0]!)) return;
+			if (!canPlay(game.currentCard, cards[0]!, game.rules)) return;
 			if (game.pickup !== 0 && getPickupValue(cards[0]!) === null) return;
 			game.canPlay = false;
 			game.pickedUp = false;

@@ -1,5 +1,5 @@
 "use client";
-import { BackCard, Card } from "@/components/Card";
+import { BackCard, Card, OldCard } from "@/components/Card";
 import styles from "./deck.module.scss";
 import { createDeck, mapGroupBy, deckTypes } from "../../../common/cards/card";
 import { Suspense, useMemo } from "react";
@@ -29,7 +29,7 @@ const Deck = () => {
 						{[...cards.entries()].map(([color, values], j) =>
 							values.map((card, i) => (
 								<div key={`${color}_${i}`} className={styles.card} style={{}}>
-									<Card symbol={card.type.toString()} color={card.color} />
+									<OldCard symbol={card.type.toString()} color={card.color} />
 								</div>
 							))
 						)}

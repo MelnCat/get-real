@@ -9,10 +9,19 @@ export const icons = {
 	"+1": {
 		type: "center",
 		size: "45%",
-		element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" fill="currentColor" overflow="visible"></svg>,
+		element: (
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" fill="currentColor" overflow="visible">
+				<rect x="50" y="50" width="200" height="300" />
+			</svg>
+		),
 		newElement: (
 			<>
-				<rect x={(200 - 2 * PICKUP_1_SIZE) / 2} y={(300 - PICKUP_1_SIZE * 3) / 2} width={PICKUP_1_SIZE * 2} height={PICKUP_1_SIZE * 3} />
+				<rect
+					x={(200 - 2 * PICKUP_1_SIZE) / 2}
+					y={(300 - PICKUP_1_SIZE * 3) / 2}
+					width={PICKUP_1_SIZE * 2}
+					height={PICKUP_1_SIZE * 3}
+				/>
 			</>
 		),
 	},
@@ -101,7 +110,9 @@ export const icons = {
 	"+16": {
 		type: "center",
 		size: "70%",
-		element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700" fill="currentColor"></svg>,
+		element: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700" fill="currentColor">
+            <text>+16</text>
+        </svg>,
 		newElement: (
 			<>
 				{[...Array(2)].map((_, j) =>
@@ -177,13 +188,20 @@ export const icons = {
 		element: (
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" fill="currentColor" overflow="visible">
 				<path d="M 0 100 L 0 200 L 400 200 L 400 300 L 600 150 L 400 0 L 400 100 L 0 100 Z" />
-				<path d="M 0 350 L 0 450 L 400 450 L 400 550 L 600 400 L 400 250 L 400 350 L 0 350 Z" transform="matrix(-1, 0, 0, -1, 600, 800)" />
+				<path
+					d="M 0 350 L 0 450 L 400 450 L 400 550 L 600 400 L 400 250 L 400 350 L 0 350 Z"
+					transform="matrix(-1, 0, 0, -1, 600, 800)"
+				/>
 			</svg>
 		),
 		newElement: (
 			<g transform="scale(0.174) translate(290, 580)">
 				<path d="M 0 100 L 0 200 L 400 200 L 400 300 L 600 150 L 400 0 L 400 100 L 0 100 Z" strokeWidth="27" />
-				<path d="M 0 350 L 0 450 L 400 450 L 400 550 L 600 400 L 400 250 L 400 350 L 0 350 Z" strokeWidth="27" transform="matrix(-1, 0, 0, -1, 600, 800)" />
+				<path
+					d="M 0 350 L 0 450 L 400 450 L 400 550 L 600 400 L 400 250 L 400 350 L 0 350 Z"
+					strokeWidth="27"
+					transform="matrix(-1, 0, 0, -1, 600, 800)"
+				/>
 			</g>
 		),
 	},

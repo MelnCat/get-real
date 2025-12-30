@@ -169,3 +169,39 @@ export const Card = ({
 		</article>
 	);
 };
+export const OldCard = ({
+	color,
+	symbol,
+	flipped = false,
+	size = sizeForSymbol(symbol),
+	spacing = spacingForSymbol(symbol),
+	height = "100px",
+	pinned = false,
+	colorOverride,
+}: CardOptions) => {
+	const cardBackground = cardBackgroundForColor(color, colorOverride);
+	return (
+		<article
+			className={`${roboto.className} ${styles.cardWrapper}`}
+			style={{ height, ...(flipped && { transform: "rotateY(180deg)" }), ...(pinned && { top: 0, left: 0, position: "absolute" }) }}
+		>
+			<div
+				className={styles.card}
+				style={{
+					[cardBackground.startsWith("url(") || cardBackground.includes("gradient(") ? "backgroundImage" : "backgroundColor"]: cardBackground,
+					backgroundPosition: "center center",
+					backgroundSize: "cover",
+					"--color-override": colorOverride ?? "",
+				}}
+				data-size={size}
+				data-spacing={spacing}
+				data-foo={JSON.stringify(colorOverride)}
+			>
+				{sideElementForSymbol(symbol)}
+				{sideElementForSymbol(symbol, true)}
+				{elementForSymbol(symbol)}
+				<CardRing color={color} colorOverride={colorOverride} />
+			</div>
+		</article>
+	);
+};

@@ -119,7 +119,7 @@ export default function GamePage() {
 			setSelected(x => {
 				const y = x.toSpliced(x.indexOf(id), 1);
 				if (y.length === 0) return y;
-				if (!canPlay(game.currentCard, game.hand.find(z => z.id === y[0])!)) return [];
+				if (!canPlay(game.currentCard, game.hand.find(z => z.id === y[0])!, game.rules)) return [];
 				const mismatch = y.findIndex((x, i, a) => i !== 0 && !canMatch(game.hand.find(z => z.id === a[i - 1])!, game.hand.find(z => z.id === x)!));
 				if (mismatch !== -1) return y.slice(0, mismatch);
 				return y;
@@ -129,7 +129,7 @@ export default function GamePage() {
 				justClicked.current[id] = Date.now();
 				setSelected(x => x.concat(id));
 			}
-		} else if ((!game.pickup || getPickupValue(card) !== null) && canPlay(game.currentCard, card)) {
+		} else if ((!game.pickup || getPickupValue(card) !== null) && canPlay(game.currentCard, card, game.rules)) {
 			justClicked.current[id] = Date.now();
 			setSelected(x => x.concat(id));
 		}
@@ -140,7 +140,7 @@ export default function GamePage() {
 		if (card === undefined) return;
 		event?.preventDefault();
 		if (!selected.includes(id)) {
-			if (selected.length === 0 && (!game.pickup || getPickupValue(card) !== null) && canPlay(game.currentCard, card)) {
+			if (selected.length === 0 && (!game.pickup || getPickupValue(card) !== null) && canPlay(game.currentCard, card, game.rules)) {
 				setSelected(x => x.concat(id).concat(game.hand.filter(y => y.id !== card.id && canMatch(card, y)).map(y => y.id)));
 			} else {
 				setSelected([]);
@@ -309,7 +309,7 @@ export default function GamePage() {
 								{...(game.yourTurn &&
 								!selected.includes(x.id) &&
 								(selected.length === 0
-									? !canPlay(game.currentCard, x) || (game.pickup && getPickupValue(x) === null)
+									? !canPlay(game.currentCard, x, game.rules) || (game.pickup && getPickupValue(x) === null)
 									: !canMatch(game.hand.find(y => y.id === selected.at(-1))!, x))
 									? { "data-disabled": true }
 									: null)}

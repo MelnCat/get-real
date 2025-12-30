@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { Game } from "../../server/game";
+import { ClientGameData, Game } from "../../server/game";
 import { randomGaussian } from "@/app/util/util";
 import { omit } from "radash";
 
@@ -83,7 +83,7 @@ export const speedrun = {
 	extra: [],
 } satisfies GameConstants;
 export const insaneConstants = {
-	colors: ["red", "blue", "yellow", "green", "orange", "purple", "#ddd", "#111", "gray", "#4b3223ff", "pink", "teal"],
+	colors: ["red", "blue", "yellow", "green", "orange", "purple", "#ddd", "#111"],
 	wilds: [],
 	includeMulticolorWild: true,
 	numbers: [
@@ -145,10 +145,7 @@ export const insaneConstants = {
 		{ type: "−8", variety: "wild", count: 2 },
 		{ type: "÷2", variety: "wild", count: 2 },
 		{ type: "÷4", variety: "wild", count: 2 },
-		{ type: "+∞", variety: "wild", count: 1 },
-		{ type: "+?", variety: "both", count: 2 },
-		{ type: "2ˣ", variety: "wild", count: 1 },
-		{ type: "^2", variety: "wild", count: 1 },
+		{ type: "+?", variety: "both", count: 4 },
 		{ type: "×0", variety: "wild", count: 1 },
 		{ type: "skip", variety: "both", count: 2 },
 		{ type: "reverse", variety: "both", count: 2 },
@@ -456,7 +453,7 @@ export const createDeck = (constants: GameConstants): Card[] => {
 
 export const createPlayingDeck = (constants: GameConstants): PlayedCard[] => createDeck(constants).map(x => ({ ...x, id: v4() }));
 
-export const canPlay = (current: Omit<PlayedCard, "id">, card: Card) => {
+export const canPlay = (current: Omit<PlayedCard, "id">, card: Card, rules: GameRules) => {
 	if (current.color instanceof Array && current.colorOverride === undefined) {
 		if (card.color instanceof Array) return card.color.some(x => current.color.includes(x));
 		return current.color.includes(card.color);
@@ -465,6 +462,7 @@ export const canPlay = (current: Omit<PlayedCard, "id">, card: Card) => {
 	if (card.color instanceof Array) return card.color.includes(color);
 	if (color === card.color) return true;
 	if (current.type === card.type) return true;
+    if (rules.placeAnyPickups && (getPickupValue(current) && getPickupValue(card))) return true;
 	return false;
 };
 
@@ -550,9 +548,11 @@ export interface GameRules {
 	pickupUntilPlayable: boolean;
 	startingCards: number;
 	unrealPenalty: number;
+    placeAnyPickups: boolean;
 }
 export const defaultRules = {
 	pickupUntilPlayable: false as boolean,
 	startingCards: 10,
 	unrealPenalty: 2,
+    placeAnyPickups: true
 } satisfies GameRules;
