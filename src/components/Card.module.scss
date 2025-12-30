@@ -6,6 +6,7 @@
 .newCardWrapper {
 	aspect-ratio: 2 / 3;
 	backface-visibility: hidden;
+	transform-style: preserve-3d;
 	svg {
 		height: 100%;
 		width: 100%;
@@ -23,7 +24,7 @@
 	overflow: hidden;
 	transition: box-shadow 1s;
 	box-shadow: var(--color-override) 0px 0px 0px 50cqmin inset;
-	
+	transform-style: preservse-3d;
 }
 
 .ring {
@@ -40,18 +41,18 @@
 	border: white 4.5cqmin solid;
 	pointer-events: none;
 	transition: box-shadow 1s;
-	box-shadow: var(--color-override) 0px 0px 0px 50cqmin inset
+	box-shadow: var(--color-override) 0px 0px 0px 50cqmin inset;
 }
 
 .smallTop,
 .smallBottom {
 	font-size: 30cqmin;
-    text-shadow: #000000 -3.3cqmin 3.3cqmin;
+	text-shadow: #000000 -3.3cqmin 3.3cqmin;
 	z-index: 2;
 	letter-spacing: -1cqmin;
-    -webkit-text-stroke: black 4cqmin;
-    paint-order: stroke fill;
-    font-variation-settings: "wght" 624.4;
+	-webkit-text-stroke: black 4cqmin;
+	paint-order: stroke fill;
+	font-variation-settings: "wght" 624.4;
 }
 
 .smallTop {
@@ -88,8 +89,8 @@
 	letter-spacing: -1cqmin;
 	line-height: 30cqmin;
 	font-size: 34cqmin;
-    paint-order: stroke fill;
-    font-weight: 500;
+	paint-order: stroke fill;
+	font-weight: 500;
 }
 .bigNumber,
 .bigIcon {
@@ -103,12 +104,12 @@
 	justify-content: center;
 }
 .bigNumber {
-    text-shadow: #000000 -5.4cqmin 5.7cqmin;
-    translate: 0.1cqmin 0;
-    -webkit-text-stroke: black 5.8cqmin;
-    z-index: 1;
-    paint-order: stroke fill;
-    font-variation-settings: "wght" 624.4;
+	text-shadow: #000000 -5.4cqmin 5.7cqmin;
+	translate: 0.1cqmin 0;
+	-webkit-text-stroke: black 5.8cqmin;
+	z-index: 1;
+	paint-order: stroke fill;
+	font-variation-settings: "wght" 624.4;
 }
 .bigIcon {
 	z-index: 1;
@@ -127,7 +128,7 @@
 	stroke-width: 5%;
 }
 .smallIcon {
-    display: flex;
+	display: flex;
 	position: absolute;
 	top: 4cqmin;
 	left: 3.2cqmin;
@@ -243,4 +244,3 @@
 	aspect-ratio: 2 / 3;
 	position: relative;
 }
-

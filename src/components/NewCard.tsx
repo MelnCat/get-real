@@ -1,4 +1,5 @@
 import { icons } from "./icons";
+import styles from "./NewCard.module.scss"
 import React from "react";
 const NewCardRing = ({ color, colorOverride }: { color: string | readonly string[]; colorOverride: string | undefined }) => {
 	return (
@@ -77,7 +78,7 @@ export const newElementForSymbol = (symbol: string) => {
 			strokeLinejoin="miter"
 			paintOrder="stroke"
 		>
-			{symbol}
+			{symbol.split("").map((x, i) => <tspan letterSpacing={i !== 0 ? 0 : -5}>{x}</tspan>)}
 		</text>
 	);
 };
@@ -138,11 +139,11 @@ export const NewCard = ({
 	pinned?: boolean;
 	colorOverride?: string;
 }) => {
-	console.log(colorOverride)
+	console.log(colorOverride);
 	const cardBackground = newCardBackgroundForColor(color, colorOverride);
 	const ringBackground = colorOverride ?? newCardBackgroundForColor(color, colorOverride);
 	return (
-		<svg version="1.1" width="200" height="300" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+		<svg version="1.1" width="200" height="300" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" className={styles.newCard}>
 			<defs>
 				{cardBackground instanceof Array && (
 					<linearGradient id={`bg_${color.toString().replaceAll(/\W/g, "")}`} x1="0" x2="0" y1="0" y2="1">
@@ -156,7 +157,11 @@ export const NewCard = ({
 					<feBlend in="SourceGraphic" in2="offOut" />
 				</filter>
 				<filter filterUnits="userSpaceOnUse" id="shadowFlipped" width="140%" x="-20%" height="140%" y="-20%">
-					{typeof window === "undefined" ? <feOffset in="SourceAlpha" dx="-7" dy="9" /> : <feOffset in="SourceAlpha" dx="7" dy="-9" />}
+					{typeof window === "undefined" ? (
+						<feOffset in="SourceAlpha" dx="-7" dy="9" />
+					) : (
+						<feOffset in="SourceAlpha" dx="7" dy="-9" />
+					)}
 					<feBlend in="SourceGraphic" in2="offOut" />
 				</filter>
 				<filter filterUnits="userSpaceOnUse" id="shadowSmall" width="140%" x="-20%" height="140%" y="-20%">
@@ -164,7 +169,11 @@ export const NewCard = ({
 					<feBlend in="SourceGraphic" in2="offOut" />
 				</filter>
 				<filter filterUnits="userSpaceOnUse" id="shadowSmallFlipped" width="140%" x="-20%" height="140%" y="-20%">
-					{typeof window === "undefined" ? <feOffset in="SourceAlpha" dx="-3" dy="6" /> : <feOffset in="SourceAlpha" dx="3" dy="-6" />}
+					{typeof window === "undefined" ? (
+						<feOffset in="SourceAlpha" dx="-3" dy="6" />
+					) : (
+						<feOffset in="SourceAlpha" dx="3" dy="-6" />
+					)}
 					<feBlend in="SourceGraphic" in2="offOut" />
 				</filter>
 				<filter filterUnits="userSpaceOnUse" id="whiteOutline">

@@ -58,6 +58,10 @@ export const RoomSettings = ({
 					<p>Unannounced 1 Card Penalty</p>
 					<input value={settings?.rules.unrealPenalty  ?? ""} disabled={disabled} type="number" onChange={e => setRules(x => ({ ...x, unrealPenalty: +e.target.value }))} />
 				</div>
+				<div className={styles.rule}>
+					<p>Unannounced 1 Card Penalty</p>
+					<input value={settings?.rules.unrealPenalty  ?? ""} disabled={disabled} type="number" onChange={e => setRules(x => ({ ...x, unrealPenalty: +e.target.value }))} />
+				</div>
 			</div>
 			<div className={styles.rules}>
 				<h3>Room Settings</h3>

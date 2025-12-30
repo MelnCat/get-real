@@ -52,9 +52,11 @@
 	--c1: #713c19;
 	--c2: #846615;
 
-	--_g1: var(--c1) calc(25% / 3), #0000 0 calc(50% / 3), var(--c1) 0 25%, #0000 0 75%, var(--c1) 0 calc(250% / 3), #0000 0 calc(275% / 3), var(--c1) 0;
+	--_g1: var(--c1) calc(25% / 3), #0000 0 calc(50% / 3), var(--c1) 0 25%, #0000 0 75%, var(--c1) 0 calc(250% / 3), #0000 0 calc(275% / 3),
+		var(--c1) 0;
 	--_g2: #0000 calc(25% / 3), var(--c1) 0 calc(50% / 3), #0000 0 calc(250% / 3), var(--c1) 0 calc(275% / 3), #0000 0;
-	background: linear-gradient(45deg, var(--_g2)), linear-gradient(45deg, var(--_g1)), linear-gradient(-45deg, var(--_g2)), linear-gradient(-45deg, var(--_g1)) var(--c2); /* second color */
+	background: linear-gradient(45deg, var(--_g2)), linear-gradient(45deg, var(--_g1)), linear-gradient(-45deg, var(--_g2)),
+		linear-gradient(-45deg, var(--_g1)) var(--c2); /* second color */
 	background-position: 0 0, var(--s) var(--s);
 	background-size: calc(2 * var(--s)) calc(2 * var(--s));
 }
@@ -90,7 +92,11 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		transform: translate3d(calc(sin(tan(var(--deck-index) * 42)) * 0.3em), calc(sin(tan(var(--deck-index) * 4)) * 0.2em), calc(var(--deck-index) * 0.05em));
+		transform: translate3d(
+			calc(sin(tan(var(--deck-index) * 42)) * 0.3em),
+			calc(sin(tan(var(--deck-index) * 4)) * 0.2em),
+			calc(var(--deck-index) * 0.05em)
+		);
 		transition: transform 1s;
 		display: var(--deck-card-display);
 		article > div {
@@ -147,7 +153,11 @@
 		top: 0;
 		left: 0;
 		transform: rotateZ(calc(sin(var(--random-seed)) * 90deg))
-			translate3d(calc(sin(tan(var(--random-seed) * 42)) * 0.5em), calc(sin(tan(var(--random-seed) * 4)) * 0.5em), calc(var(--card-index) * 0.1em));
+			translate3d(
+				calc(sin(tan(var(--random-seed) * 42)) * 0.5em),
+				calc(sin(tan(var(--random-seed) * 4)) * 0.5em),
+				calc(var(--card-index) * 0.1em)
+			);
 		filter: drop-shadow(2px 2px 4px #00000044);
 		transition: transform 0.5s;
 	}
@@ -156,7 +166,11 @@
 	}
 	.discardEnterActive {
 		transform: rotateZ(calc(sin(var(--random-seed)) * 90deg))
-			translate3d(calc(sin(tan(var(--random-seed) * 42)) * 0.5em), calc(sin(tan(var(--random-seed) * 4)) * 0.5em), calc(var(--card-index) * 0.1em));
+			translate3d(
+				calc(sin(tan(var(--random-seed) * 42)) * 0.5em),
+				calc(sin(tan(var(--random-seed) * 4)) * 0.5em),
+				calc(var(--card-index) * 0.1em)
+			);
 	}
 }
 .bottomRow {
@@ -303,6 +317,7 @@
 	.handCard {
 		flex-shrink: 1;
 		transition: flex-shrink 0.2s, translate 0.15s, filter 0.2s;
+        transition-timing-function: ease-in-out;
 		min-width: 2em;
 		margin-top: auto;
 		&:first-child {
@@ -467,11 +482,15 @@
 	border-radius: 6px;
 	transition: background-color 0.2s;
 	z-index: 2;
+	color: #000000ee;
 	&:hover {
 		background-color: #ddd;
 	}
 	&:active {
 		background-color: #bbb;
+	}
+	&:disabled {
+		color: #00000066;
 	}
 }
 
@@ -481,7 +500,8 @@
 	margin: auto;
 	left: 50%;
 	top: 55%;
-	transform: translateZ(1em) rotateX(0deg) translateX(-50%) translateY(-50%) rotateX(-90deg) rotateY(var(--angle)) translateX(var(--distance)) rotateY(-90deg);
+	transform: translateZ(1em) rotateX(0deg) translateX(-50%) translateY(-50%) rotateX(-90deg) rotateY(var(--angle))
+		translateX(var(--distance)) rotateY(-90deg);
 	user-select: none;
 	@media screen and (max-width: 500px) {
 		font-size: 0.8em;

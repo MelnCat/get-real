@@ -108,4 +108,17 @@ export const deckTypeIcons: Record<keyof typeof deckTypes, { background: string;
 		),
 		background: backgroundForColor(deckTypes.neverending.colors),
 	},
+	insane: {
+		element: (
+			<DeckTypeIcon name="Insane">
+				<div className={styles.cardDisplay}>
+					<Card color={deckTypes.insane.colors} symbol="+64" height="3.5em" />
+					<Card color={deckTypes.insane.colors} symbol="2ˣ" height="3.5em" />
+					<Card color="rebeccapurple" symbol="7" height="3.5em" />
+					<Card color="springgreen" symbol="÷3" height="3.5em" />
+				</div>
+			</DeckTypeIcon>
+		),
+		background: backgroundForColor(deckTypes.neverending.colors),
+	},
 };

@@ -27,14 +27,14 @@ export default function SetupPage() {
 				<section className={styles.description}>
 					<section className={styles.cardBar}>
 						<DualCard height="6em" flipped color="red" symbol="G" />
-						<DualCard height="6em"  flipped color="blue" symbol="E" />
-						<DualCard height="6em"  flipped color="multicolor" symbol="T" />
-						<DualCard height="6em"  flipped color="purple" symbol="+2" />
-						<DualCard height="6em"  flipped color="orange" symbol="R" />
-						<DualCard height="6em"  flipped color="green" symbol="E" />
-						<DualCard height="6em"  flipped color="multicolor" symbol="A" />
-						<DualCard height="6em"  flipped color="yellow" symbol="L" />
-						<DualCard height="6em"  flipped color="url('/mewhenthe.gif')" symbol="+∞" />
+						<DualCard height="6em" flipped color="blue" symbol="E" />
+						<DualCard height="6em" flipped color="multicolor" symbol="T" />
+						<DualCard height="6em" flipped color="purple" symbol="+2" />
+						<DualCard height="6em" flipped color="orange" symbol="R" />
+						<DualCard height="6em" flipped color="green" symbol="E" />
+						<DualCard height="6em" flipped color="multicolor" symbol="A" />
+						<DualCard height="6em" flipped color="yellow" symbol="L" />
+						<DualCard height="6em" flipped color="url('/mewhenthe.gif')" symbol="+∞" />
 					</section>
 					<span className={styles.getReal}>GET REAL</span> is a card game based on UNO™, but with additional rules and cards!
 					<br />
@@ -44,8 +44,16 @@ export default function SetupPage() {
 				</section>
 				<section className={styles.submit}>
 					<p>Pick a username:</p>
-					<input aria-label="Username" name="username" value={input} onChange={e => setInput(e.target.value)} disabled={submitted}></input>
-					<button onClick={() => input && submit(input)} disabled={submitted}>Submit</button>
+					<input
+						aria-label="Username"
+						name="username"
+						value={input}
+						onChange={e => setInput(e.target.value)}
+						disabled={submitted}
+					></input>
+					<button onClick={() => input && submit(input)} disabled={submitted}>
+						Submit
+					</button>
 				</section>
 			</article>
 		</main>

@@ -370,7 +370,6 @@ export default function GamePage() {
 						))}
 				</div>
 			)}
-			<div className={styles.temporary}>{game.lastDrawer}</div>
 			{room.state === "end" ? (
 				<div className={`${roboto.className} ${styles.endScreen}`}>
 					<h1>Game Over</h1>
